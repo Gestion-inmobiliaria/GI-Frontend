@@ -18,6 +18,10 @@ export enum PrivateRoutes {
   PERMISSIONS = PrivateRoutes.USER + '/permisos',
   PERMISSIONS_CREATE = PrivateRoutes.PERMISSIONS + '/crear',
   PERMISSIONS_EDIT = PrivateRoutes.PERMISSIONS + '/:id',
+  // branches
+  BRANCH = '/sucursales',
+  BRANCH_CREATE = PrivateRoutes.BRANCH + '/crear',
+  BRANCH_EDIT = PrivateRoutes.BRANCH + '/:id',
 }
 
 export interface Route {

@@ -1,6 +1,6 @@
 // import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, BuildingIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -37,5 +37,19 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         permissions: [PERMISSION.PERMISSION, PERMISSION.PERMISSION_SHOW]
       }
     ]
-  },  
+  },
+  {
+    label: 'Gestión de Sucursales',
+    icon: createElement(BuildingIcon, { width: 20, height: 20 }),
+    path: '/sucursales',
+    permissions: [PERMISSION.BRANCH, PERMISSION.BRANCH_SHOW],
+    children: [
+      {
+        path: '/sucursales',
+        label: 'Sucursales',
+        icon: createElement(BuildingIcon, { width: 20, height: 20 }),
+        permissions: [PERMISSION.BRANCH, PERMISSION.BRANCH_SHOW]
+      }
+    ]
+  }
 ]
