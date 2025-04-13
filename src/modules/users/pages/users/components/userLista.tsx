@@ -39,7 +39,6 @@ export interface NewUser extends ApiBase {
   gender: string
   isActive: boolean
   role: string
-  branch: string
   password: string
 }
 
@@ -88,15 +87,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
       const phone = parseFloat(row.getValue('phone'))
       return <div className="font-medium">{phone}</div>
     }
-  },
-  {
-    accessorKey: 'branch',
-    header: () => <div>Sucursal</div>,
-    cell: ({ row }) => {
-      // const branch = row.getValue('branch')
-      return <div className="font-medium">{row.getValue('branch')}</div>
-    }
-  },
+  },  
   {
     accessorKey: 'id',
     header: '',
@@ -196,8 +187,7 @@ export function DataTableDemo() {
   const [rowSelection, setRowSelection] = React.useState({})
 
   const newAllUsers = React.useMemo(() => allUsers?.map((user: User) => ({
-    ...user,
-    branch: user.branch.name,
+    ...user,    
     role: user.role.name
   })) ?? [], [allUsers])
 

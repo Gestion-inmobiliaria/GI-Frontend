@@ -1,5 +1,5 @@
 import { PrivateRoutes } from '@/models/routes.model'
-import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
+import { ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -102,14 +102,14 @@ const RolesPage = (): JSX.Element => {
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button
+            {/* <Button
               size="sm"
               variant="outline"
               className="h-7 gap-1 text-sm"
             >
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only">Exportar</span>
-            </Button>
+            </Button> */}
             <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.ROLE_FORM) }}>
               <PlusCircleIcon className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">

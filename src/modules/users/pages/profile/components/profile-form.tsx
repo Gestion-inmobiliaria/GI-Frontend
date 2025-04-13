@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom'
 
 import { z } from 'zod'
 import { useGetRole } from '@/modules/auth/hooks/useRole'
-import { useGetBranch } from '@/modules/company/hooks/useBranch'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { type IFormProps } from '@/models'
@@ -27,8 +26,7 @@ const formSchema = z.object({
   password: z.string().min(2).max(50),
   role: z.string(),
   gender: z.string(),
-  address: z.string().min(2).max(50),
-  branch: z.string()
+  address: z.string().min(2).max(50),  
 })
 
 const ProfileForm = ({ buttonText, title }: IFormProps) => {
@@ -37,7 +35,6 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
   const { error } = useCreateUser()
   const { updateUser } = useUpdateUser()
   const { role } = useGetRole(user?.role?.id)
-  const { branch } = useGetBranch(user?.branch?.id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
@@ -46,16 +43,14 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
       address: user?.address ?? '',
       phone: user?.phone ?? '',
       email: user?.email ?? '',
-      role: role?.name ?? '',
-      branch: branch?.name ?? '',
+      role: role?.name ?? '',      
       password: user?.password ?? '', // Ensure password is blank
       gender: user?.gender ?? ''
     }
   })
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    data.role = user?.role.id ?? ''
-    data.branch = user?.branch.id ?? ''
+    data.role = user?.role.id ?? ''    
     data.gender = user?.gender ?? ''
     const ciNumber = parseInt(data.ci, 10)
     const id = user?.id
@@ -68,8 +63,7 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
       role: data.role,
       gender: data.gender,
       phone: data.phone,
-      password: data.password,
-      branch: data.branch
+      password: data.password,      
     }), {
       loading: 'Actualizando usuario...',
       success: () => {
@@ -148,7 +142,7 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
                         <FormItem>
                           <FormLabel>Nombre</FormLabel>
                           <FormControl>
-                            <Input placeholder="Sucursal 4to anillo..." {...field} />
+                            <Input placeholder="Usuario" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -156,7 +150,7 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
                     />
                   </div>
                   <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="password"
                       defaultValue=""
@@ -169,7 +163,7 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
                     <FormField
                       control={form.control}
                       name="phone"
@@ -194,27 +188,12 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
                         <FormItem>
                           <FormLabel>Correo electronico</FormLabel>
                           <FormControl>
-                            <Input placeholder="sucursal@example.com" {...field} />
+                            <Input placeholder="user@example.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Direccion</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Av. Mapaizo..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
+                    />                    
                   </div>
 
                 </CardContent>
@@ -225,7 +204,7 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
                   <CardHeader>
                     <CardTitle>Asignación</CardTitle>
                     <CardDescription>
-                      {'Sucursal y rol asignado a esta cuenta. Solo el admin puede reasignar'}
+                      {'Rol asignado a esta cuenta. Solo el admin puede reasignar'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className='grid gap-4 lg:gap-6'>
@@ -243,21 +222,7 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
                             <FormMessage />
                           </FormItem>
                         )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="branch"
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Sucursal</FormLabel>
-                            <FormControl>
-                              <Input placeholder="su sucrusal es..." readOnly {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      />                      
                     </div>
                   </CardContent>
                 </Card>

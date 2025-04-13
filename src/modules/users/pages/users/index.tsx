@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeftIcon, File, ListFilter, MoreHorizontal, PlusCircle, Search, Trash } from 'lucide-react'
+import { ChevronLeftIcon, ListFilter, MoreHorizontal, PlusCircle, Search, Trash } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -83,7 +83,7 @@ const UserPage = (): JSX.Element => {
             <DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button size="sm" variant="outline" className="h-8 gap-1"><File className="h-3.5 w-3.5" /></Button>
+        {/* <Button size="sm" variant="outline" className="h-8 gap-1"><File className="h-3.5 w-3.5" /></Button> */}
         <Button onClick={() => { navigate(PrivateRoutes.USER_CREAR) }} size="sm" className="h-8 gap-1">
           <PlusCircle className="h-3.5 w-3.5" />
           <span className="sr-only lg:not-sr-only sm:whitespace-nowrap">Agregar</span>
@@ -100,8 +100,7 @@ const UserPage = (): JSX.Element => {
                 <TableRow>
                   <TableHead>Nombre</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Rol</TableHead>
-                  <TableHead>Sucursal</TableHead>
+                  <TableHead>Rol</TableHead>                  
                   <TableHead>Estado</TableHead>
                   <TableHead><span className='sr-only'>Opciones</span></TableHead>
                 </TableRow>
@@ -113,8 +112,7 @@ const UserPage = (): JSX.Element => {
                     <TableRow key={user.id}>
                       <TableCell>{user.name}</TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role.name}</TableCell>
-                      <TableCell>{user.branch ? user.branch.name : '-'}</TableCell>
+                      <TableCell>{user.role.name}</TableCell>                      
                       <TableCell>
                         <Badge variant={user.isActive ? 'default' : 'outline'}>
                           {user.isActive ? 'Activo' : 'Inactivo'}

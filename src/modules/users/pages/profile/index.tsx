@@ -1,11 +1,10 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ChevronLeftIcon, Pencil } from 'lucide-react'
 
 import { PrivateRoutes } from '@/models'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs } from '@/components/ui/tabs'
-import { useGetProvider } from '@/modules/buy/hooks/useProvider'
 
 import { type RootState } from '@/redux/store'
 import { useSelector } from 'react-redux'
@@ -13,8 +12,6 @@ import { useSelector } from 'react-redux'
 function ProfilePage(): JSX.Element {
   const user = useSelector((state: RootState) => state.user)
   const navigate = useNavigate()
-  const { id } = useParams()
-  const { provider } = useGetProvider(id)
   return (
     <Tabs defaultValue="all">
       <section className="grid flex-1 items-start gap-4 lg:gap-6">
@@ -32,8 +29,7 @@ function ProfilePage(): JSX.Element {
                       <ChevronLeftIcon className="h-5 w-5" />
                       <span className="sr-only">Volver</span>
                     </Button>
-                    <img
-                    alt={provider?.name}
+                    <img                    
                     className="aspect-square rounded-full object-cover shrink-0 lg:h-28 lg:w-28"
                     src={'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
                     height="70"
@@ -104,57 +100,7 @@ function ProfilePage(): JSX.Element {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          <div className="flex flex-col gap-4 lg:gap-6">
-
-            <Card className="overflow-hidden">
-              <CardHeader className="flex flex-row items-start bg-muted/50">
-                <div className="flex flex-col gap-2">
-                  <CardTitle className="text-lg">
-                    Sucursal
-                  </CardTitle>
-                  <CardDescription>Información de la sucursal</CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="pb-4 px-4 lg:px-6 lg:pb-6 text-sm">
-                <div className="grid gap-3">
-                  <ul className="grid gap-3">
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Nombre
-                      </span>
-                      <span>{user.branch.name}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Dirección
-                      </span>
-                      <span>{user.branch.address}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Email
-                      </span>
-                      <span>{user.branch.email}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Teléfono
-                      </span>
-                      <span>{user.branch.phone}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Estado
-                      </span>
-                      <span>{user.branch.is_suspended ? 'Activo' : 'Inactivo'}</span>
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          </div>          
         </div>
         <div className="grid gap-4 lg:gap-6 lg:grid-cols-1 xl:grid-cols-1">
           <div className="flex flex-col gap-4 lg:gap-6">

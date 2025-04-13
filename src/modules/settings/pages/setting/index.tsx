@@ -15,7 +15,7 @@ const SettingPage = (): JSX.Element => {
             <TabsTrigger value="appearance">Apariencia</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            <ProfileForm title='Actualizar cuenta' buttonText='Actualizar'></ProfileForm>
+            <ProfileForm title='Cuenta' buttonText='Actualizar'></ProfileForm>
           </TabsContent>
           <TabsContent value="appearance">
             <div className="mx-auto grid w-full pt-2 lg:pt-4 gap-4 lg:gap-6">
