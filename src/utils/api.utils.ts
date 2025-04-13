@@ -6,7 +6,7 @@ export const ENDPOINTS = {
   // user
   USER: '/api/user',
   ROLE: '/api/role',
-  PERMISSION: '/api/permission',
+  PERMISSION: '/api/permission'
 }
 
 export const API_BASEURL = AppConfig.API_URL

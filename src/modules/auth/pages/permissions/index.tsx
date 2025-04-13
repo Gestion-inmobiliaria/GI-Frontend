@@ -1,5 +1,5 @@
 import { PrivateRoutes } from '@/models/routes.model'
-import { File, ListFilterIcon } from 'lucide-react'
+import { ListFilterIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
