@@ -7,7 +7,10 @@ export enum PERMISSION {
   ROLE = 'Rol',
   ROLE_SHOW = 'Mostrar roles',
   PERMISSION = 'Permiso',
-  PERMISSION_SHOW = 'Mostrar permisos',  
+  PERMISSION_SHOW = 'Mostrar permisos',
+  // branch
+  BRANCH = 'Sucursal',
+  BRANCH_SHOW = 'Mostrar sucursales',
 }
 
 export const modulePermissions = {
@@ -19,4 +22,8 @@ export const modulePermissions = {
     PERMISSION.PERMISSION,
     PERMISSION.PERMISSION_SHOW
   ],
+  sucursal: [
+    PERMISSION.BRANCH,
+    PERMISSION.BRANCH_SHOW
+  ]
 }

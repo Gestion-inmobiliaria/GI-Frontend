@@ -6,7 +6,9 @@ export const ENDPOINTS = {
   // user
   USER: '/api/user',
   ROLE: '/api/role',
-  PERMISSION: '/api/permission'
+  PERMISSION: '/api/permission',
+  // branch
+  BRANCH: '/api/branch'
 }
 
 export const API_BASEURL = AppConfig.API_URL
