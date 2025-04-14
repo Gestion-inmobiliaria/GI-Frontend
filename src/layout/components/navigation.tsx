@@ -5,7 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from '@components/ui/collapsible'
-import { ChevronRightIcon, HomeIcon, SettingsIcon } from 'lucide-react'
+import { ChevronRightIcon, CreditCard, HomeIcon, SettingsIcon } from 'lucide-react'
 import { useSidebar } from '@/context/sidebarContext'
 import { useEffect } from 'react'
 import { PrivateRoutes } from '@/models/routes.model'
@@ -47,6 +47,10 @@ function Navigation() {
         <Link to={PrivateRoutes.DASHBOARD} className={`${selectedMenu === PrivateRoutes.DASHBOARD ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}>
           <HomeIcon width={22} height={22} />
           <span className={isContract ? 'hidden' : ''}>Dashboard</span>
+        </Link>
+        <Link to={PrivateRoutes.SUBSCRIPTION} className={`${selectedMenu === PrivateRoutes.SUBSCRIPTION ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}>
+          <CreditCard width={22} height={22} />
+          <span className={isContract ? 'hidden' : ''}>Subscripción</span>
         </Link>
         {status === authStatus.authenticated
           ? MenuSideBar.map((item: MenuHeaderRoute, index) => {

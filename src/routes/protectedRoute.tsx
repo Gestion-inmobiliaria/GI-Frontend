@@ -6,6 +6,7 @@ import Loading from '@/components/shared/loading'
 import { useEffect, useState } from 'react'
 import { authStatus } from '@/utils'
 import { useAuth } from '@/hooks'
+import { AppConfig } from '@/config'
 
 interface ProtectedRouteProps extends Partial<ChildrenProps> {
   isPrivate?: boolean
@@ -27,7 +28,7 @@ const ProtectedRoute = ({ isPrivate = false, redirectTo = '/login', children }: 
   if (render) {
     return (
       <div className='flex gap-4 min-h-screen justify-center items-center'>
-        <Loading /><span>Gasolinera S.A.</span>
+        <Loading /><span>{AppConfig.APP_TITLE}</span>
       </div>
     )
   }

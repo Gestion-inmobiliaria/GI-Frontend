@@ -27,28 +27,49 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
     }
   }, [error])
 
+  const checkAuthStatus = async () => {
+    const token = getStorage(STORAGE_TOKEN)
+    if (!token) {
+      setStatus(authStatus.unauthenticated)
+      dispatch(resetUser())
+      removeStorage(STORAGE_USER)
+      return
+    }
+    try {
+      const responseUser = await checkToken({ token })
+      dispatch(createUser(responseUser))
+      setStatus(authStatus.authenticated)
+    } catch (error) {
+      removeStorage(STORAGE_TOKEN)
+      removeStorage(STORAGE_USER)
+      removeStorage(STORAGE_BRANCH)
+      setStatus(authStatus.unauthenticated)
+      dispatch(resetUser())
+    }
+  }
+
   let subscribe = false
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      const token = getStorage(STORAGE_TOKEN)
-      if (!token) {
-        setStatus(authStatus.unauthenticated)
-        dispatch(resetUser())
-        removeStorage(STORAGE_USER)
-        return
-      }
-      try {
-        const responseUser = await checkToken({ token })
-        dispatch(createUser(responseUser))
-        setStatus(authStatus.authenticated)
-      } catch (error) {
-        removeStorage(STORAGE_TOKEN)
-        removeStorage(STORAGE_USER)
-        removeStorage(STORAGE_BRANCH)
-        setStatus(authStatus.unauthenticated)
-        dispatch(resetUser())
-      }
-    }
+    // const checkAuthStatus = async () => {
+    //   const token = getStorage(STORAGE_TOKEN)
+    //   if (!token) {
+    //     setStatus(authStatus.unauthenticated)
+    //     dispatch(resetUser())
+    //     removeStorage(STORAGE_USER)
+    //     return
+    //   }
+    //   try {
+    //     const responseUser = await checkToken({ token })
+    //     dispatch(createUser(responseUser))
+    //     setStatus(authStatus.authenticated)
+    //   } catch (error) {
+    //     removeStorage(STORAGE_TOKEN)
+    //     removeStorage(STORAGE_USER)
+    //     removeStorage(STORAGE_BRANCH)
+    //     setStatus(authStatus.unauthenticated)
+    //     dispatch(resetUser())
+    //   }
+    // }
     if (!subscribe) {
       void checkAuthStatus()
     }
@@ -83,7 +104,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
   }
 
   const value = useMemo(() => {
-    return { status, error, signOut, signWithEmailPassword, isMutating: isLoggingIn }
+    return { status, error, signOut, signWithEmailPassword, isMutating: isLoggingIn, checkAuthStatus }
   }, [status, error, isLoggingIn])
 
   return (

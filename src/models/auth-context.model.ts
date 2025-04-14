@@ -9,4 +9,5 @@ export interface AuthContextState {
   // resetPasswordWithEmail: (loginForm: AuthLoginWithToken) => Promise<boolean | undefined>
   signOut: () => void
   isMutating: boolean
+  checkAuthStatus: () => Promise<void>
 }
