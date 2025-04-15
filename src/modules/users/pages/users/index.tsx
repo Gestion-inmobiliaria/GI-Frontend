@@ -112,7 +112,7 @@ const UserPage = (): JSX.Element => {
                     <TableRow key={user.id}>
                       <TableCell>{user.name}</TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role.name}</TableCell>                      
+                      <TableCell>{user.role.name}</TableCell>
                       <TableCell>
                         <Badge variant={user.isActive ? 'default' : 'outline'}>
                           {user.isActive ? 'Activo' : 'Inactivo'}

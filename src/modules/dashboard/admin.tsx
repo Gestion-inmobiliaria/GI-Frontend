@@ -2,7 +2,7 @@
 import Pagination from '@/components/shared/pagination'
 import Skeleton from '@/components/shared/skeleton'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -18,19 +18,19 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { AppConfig } from '@/config'
+// import { AppConfig } from '@/config'
 import { useHeader } from '@/hooks'
-import { useGetAllResource, useGetResource } from '@/hooks/useApiResource'
-import { PrivateRoutes } from '@/models'
-import { type RootState } from '@/redux/store'
+import { useGetAllResource } from '@/hooks/useApiResource'
+// import { PrivateRoutes } from '@/models'
+// import { type RootState } from '@/redux/store'
 import { ENDPOINTS } from '@/utils'
-import { DropdownMenu } from '@radix-ui/react-dropdown-menu'
-import { ArrowRight } from 'lucide-react'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+// import { DropdownMenu } from '@radix-ui/react-dropdown-menu'
+// import { ArrowRight } from 'lucide-react'
+// import { useSelector } from 'react-redux'
+// import { useNavigate } from 'react-router-dom'
 const DashboardAdminPage = (): React.ReactNode => {
   useHeader([{ label: 'Dashboard' }])
-  const data: any = useSelector((state: RootState) => state.user)
+  // const data: any = useSelector((state: RootState) => state.user)
   const {
     allResource: realStates,
     isLoading,
@@ -44,7 +44,7 @@ const DashboardAdminPage = (): React.ReactNode => {
     isPagination: true
   })
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   return (
     <>

@@ -5,7 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from '@components/ui/collapsible'
-import { ChevronRightIcon, HomeIcon, SettingsIcon } from 'lucide-react'
+import { ChevronRightIcon, HomeIcon } from 'lucide-react'
 import { useSidebar } from '@/context/sidebarContext'
 import { useEffect } from 'react'
 import { PrivateRoutes } from '@/models/routes.model'
