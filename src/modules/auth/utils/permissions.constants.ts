@@ -8,7 +8,6 @@ export enum PERMISSION {
   ROLE_SHOW = 'Mostrar roles',
   PERMISSION = 'Permiso',
   PERMISSION_SHOW = 'Mostrar permisos',
-
   // realstate
   REALSTATE = 'Inmobiliaria',
   REALSTATE_SHOW = 'Mostrar inmobiliarias',
@@ -28,6 +27,9 @@ export enum PERMISSION {
   SECTOR_DELETE = 'Eliminar sectores',
 
   SUBSCRIPTION = 'Suscripcion',
+  // branch
+  BRANCH = 'Sucursal',
+  BRANCH_SHOW = 'Mostrar sucursales',
 }
 
 export const modulePermissions = {
@@ -38,5 +40,9 @@ export const modulePermissions = {
     PERMISSION.ROLE_SHOW,
     PERMISSION.PERMISSION,
     PERMISSION.PERMISSION_SHOW
+  ],
+  sucursal: [
+    PERMISSION.BRANCH,
+    PERMISSION.BRANCH_SHOW
   ]
 }

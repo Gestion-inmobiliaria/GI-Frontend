@@ -1,5 +1,5 @@
 import { PrivateRoutes } from '@/models/routes.model'
-import { ListFilterIcon } from 'lucide-react'
+import { ListFilterIcon, PlusIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +10,9 @@ import { useGetAllPermissions } from '../../hooks/usePermission'
 import { type Permission } from '../../models/permission.model'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
+import { toast } from 'sonner'
+import permissionService from '../../services/permission.service'
+import { useState } from 'react'
 
 const PermissionsPage = () => {
   useHeader([
@@ -17,13 +20,40 @@ const PermissionsPage = () => {
     { label: 'Usuarios', path: PrivateRoutes.USER },
     { label: 'Permisos' }
   ])
-  const { permissions, isLoading } = useGetAllPermissions()
+  const { permissions, isLoading, mutate } = useGetAllPermissions()
+  const [isAddingPerms, setIsAddingPerms] = useState(false)
+
+  const handleAddBranchPermissions = async () => {
+    try {
+      setIsAddingPerms(true)
+      await permissionService.addBranchPermissions()
+      toast.success('Permisos de sucursales creados correctamente')
+      // Actualizar la lista de permisos
+      mutate()
+    } catch (error) {
+      console.error('Error al crear permisos de sucursales:', error)
+      toast.error('Error al crear permisos de sucursales')
+    } finally {
+      setIsAddingPerms(false)
+    }
+  }
+
   return (
     <section className="grid flex-1 items-start gap-4 sm:py-0 md:gap-8">
       <div className="grid auto-rows-max items-start gap-4 md:gap-6 lg:col-span-2">
         <Tabs defaultValue="week" className='grid gap-4'>
           <div className="flex items-center">
             <div className="ml-auto flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 gap-1 text-sm"
+                onClick={handleAddBranchPermissions}
+                disabled={isAddingPerms}
+              >
+                <PlusIcon className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only">Agregar permisos de sucursales</span>
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
