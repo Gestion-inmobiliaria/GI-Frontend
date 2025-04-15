@@ -1,8 +1,8 @@
 import { PrivateAxios } from '@/config/axios.config'
 import { ENDPOINTS } from '@/utils/api.utils'
-import { PaginatedResponse } from '@/models/response.model'
+import { type PaginatedResponse } from '@/models/response.model'
 import { type Permission, type PermissionUpdate } from '../models/permission.model'
-import { QueryParams } from '@/models/query.model'
+import { type QueryParams } from '@/models/query.model'
 
 export const permissionService = {
   getAll: async (params?: QueryParams): Promise<PaginatedResponse<Permission>> => {
@@ -35,17 +35,15 @@ export const permissionService = {
       // Crear permiso para gestionar sucursales
       const branchPermission = await permissionService.create({
         name: 'Sucursal',
-        description: 'permite gestionar sucursales',
-        type: 'Sucursales' // Este valor debe coincidir con el enum PermissionType.BRANCH
+        description: 'permite gestionar sucursales'
+        // type: 'Sucursales' // Este valor debe coincidir con el enum PermissionType.BRANCH
       })
-      
       // Crear permiso para ver sucursales
       const branchShowPermission = await permissionService.create({
         name: 'Mostrar sucursales',
-        description: 'permite ver sucursales',
-        type: 'Sucursales' // Este valor debe coincidir con el enum PermissionType.BRANCH
+        description: 'permite ver sucursales'
+        // type: 'Sucursales' // Este valor debe coincidir con el enum PermissionType.BRANCH
       })
-      
       return {
         branchPermission,
         branchShowPermission,
@@ -58,4 +56,4 @@ export const permissionService = {
   }
 }
 
-export default permissionService 
+export default permissionService
