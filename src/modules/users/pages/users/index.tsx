@@ -100,7 +100,7 @@ const UserPage = (): JSX.Element => {
                 <TableRow>
                   <TableHead>Nombre</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Rol</TableHead>                  
+                  <TableHead>Rol</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead><span className='sr-only'>Opciones</span></TableHead>
                 </TableRow>

@@ -5,7 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from '@components/ui/collapsible'
-import { ChevronRightIcon, CreditCard, HomeIcon, SettingsIcon } from 'lucide-react'
+import { ChevronRightIcon, HomeIcon, SettingsIcon } from 'lucide-react'
 import { useSidebar } from '@/context/sidebarContext'
 import { useEffect } from 'react'
 import { PrivateRoutes } from '@/models/routes.model'
@@ -41,6 +41,8 @@ function Navigation() {
     }
   }, [location.pathname])
 
+  console.log({ selectedMenu, menuActive })
+
   return (
     <nav className="flex h-full flex-col w-full justify-between overflow-hidden">
       <section className='flex flex-col w-full gap-1 items-start p-4 overflow-y-auto relative overflow-x-hidden'>
@@ -48,10 +50,10 @@ function Navigation() {
           <HomeIcon width={22} height={22} />
           <span className={isContract ? 'hidden' : ''}>Dashboard</span>
         </Link>
-        <Link to={PrivateRoutes.SUBSCRIPTION} className={`${selectedMenu === PrivateRoutes.SUBSCRIPTION ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}>
+        {/* <Link to={PrivateRoutes.SUBSCRIPTION} className={`${selectedMenu === PrivateRoutes.SUBSCRIPTION ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}>
           <CreditCard width={22} height={22} />
           <span className={isContract ? 'hidden' : ''}>Subscripción</span>
-        </Link>
+        </Link> */}
         {status === authStatus.authenticated
           ? MenuSideBar.map((item: MenuHeaderRoute, index) => {
             if (item.children && verifyPermission(item.permissions!)) {
@@ -107,7 +109,7 @@ function Navigation() {
                   <Link
                     key={index}
                     to={item.path!}
-                    className={`${selectedMenu === PrivateRoutes.DASHBOARD ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 mb-1 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}
+                    className={`${selectedMenu.includes(item.path!) ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 mb-1 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}
                   >
                     {item.icon}
                     <span className={isContract ? 'hidden' : ''}>{item.label}</span>
@@ -120,7 +122,7 @@ function Navigation() {
           )
           : <div className="grid place-content-center place-items-center w-full py-2"><Loading /></div>}
       </section>
-      <section className='border-t p-4'>
+      {/* <section className='border-t p-4'>
         <Link
           to={PrivateRoutes.SETTINGS}
           className={`${selectedMenu === PrivateRoutes.SETTINGS ? 'text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:bg-dark-border font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-md px-4 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}
@@ -128,7 +130,7 @@ function Navigation() {
           <SettingsIcon width={22} height={22} />
           <span className={isContract ? 'hidden' : ''}>Configuración</span>
         </Link>
-      </section>
+      </section> */}
     </nav>
   )
 }
