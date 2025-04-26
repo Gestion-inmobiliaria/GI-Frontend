@@ -1,5 +1,7 @@
 import { AppConfig } from '../config'
 
+
+
 export const ENDPOINTS = {
   // auth
   AUTH: '/api/auth',
@@ -8,7 +10,9 @@ export const ENDPOINTS = {
   ROLE: '/api/role',
   PERMISSION: '/api/permission',
   // branch
-  BRANCH: '/api/branch'
+  BRANCH: '/api/branch',
+  // client
+  CLIENT: '/api/client'
 }
 
 export const API_BASEURL = AppConfig.API_URL
