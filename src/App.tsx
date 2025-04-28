@@ -1,10 +1,12 @@
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { SWRConfig } from 'swr'
-import { AuthProvider } from './context/authContext'
-import { store } from './redux/store'
 import Routes from './routes'
+import { SWRConfig } from 'swr'
+import { store } from './redux/store'
+import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from './context/authContext'
 import { ThemeProvider } from './context/themeContext'
+
+
 
 function App() {
   return (

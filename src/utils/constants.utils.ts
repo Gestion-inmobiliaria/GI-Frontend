@@ -1,12 +1,12 @@
 export enum ROLE {
-  BASIC = 'basic',
-  ADMIN = 'admin',
+    BASIC = 'basic',
+    ADMIN = 'admin',
 }
 
 export enum GENDER {
-  MASCULINO = 'masculino',
-  FEMENINO = 'femenino',
-  OTRO = 'otro',
+    MASCULINO = 'masculino',
+    FEMENINO = 'femenino',
+    OTRO = 'otro',
 }
 
 export const STORAGE_MENU_SELECTED = 'menu-selected'
