@@ -1,12 +1,14 @@
-import { Route, Routes } from 'react-router-dom'
 import { lazy } from 'react'
-import { PrivateAllRoutes } from './utils/routes.utils'
-import { SidebarProvider } from '@/context/sidebarContext'
-import { HeaderProvider } from '@/context/headerContext'
-import { useAuthorization } from '@/hooks/useAuthorization'
 import { useSelector } from 'react-redux'
 import { type RootState } from '@/redux/store'
+import { Route, Routes } from 'react-router-dom'
+import { PrivateAllRoutes } from './utils/routes.utils'
+import { HeaderProvider } from '@/context/headerContext'
+import { SidebarProvider } from '@/context/sidebarContext'
 import DashboardAdminPage from '@/modules/dashboard/admin'
+import { useAuthorization } from '@/hooks/useAuthorization'
+
+
 
 const Layout = lazy(() => import('@/layout/index'))
 

@@ -9,19 +9,19 @@ import { ThemeProvider } from './context/themeContext'
 
 
 function App() {
-  return (
-    <Provider store={store}>
-      <AuthProvider>
-        <ThemeProvider>
-          <SWRConfig value={{ revalidateOnFocus: false }}>
-            <BrowserRouter>
-              <Routes />
-            </BrowserRouter>
-          </SWRConfig>
-        </ThemeProvider>
-      </AuthProvider>
-    </Provider>
-  )
+    return (
+        <Provider store={store}>
+            <AuthProvider>
+                <ThemeProvider>
+                    <SWRConfig value={{ revalidateOnFocus: false }}>
+                        <BrowserRouter>
+                            <Routes />
+                        </BrowserRouter>
+                    </SWRConfig>
+                </ThemeProvider>
+            </AuthProvider>
+        </Provider>
+    )
 }
 
 export default App

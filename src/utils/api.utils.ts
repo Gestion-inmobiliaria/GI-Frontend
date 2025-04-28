@@ -11,7 +11,8 @@ export const ENDPOINTS = {
     // user
     USER: '/api/user',
     ROLE: '/api/role',
-    PERMISSION: '/api/permission'
+    PERMISSION: '/api/permission',
+    UPLOAD_EXCEL: '/api/states/upload-excel',
 }
 
 export const API_BASEURL = AppConfig.API_URL
