@@ -1,7 +1,7 @@
-export interface ApiResponse {
+export interface ApiResponse<T = any> {
   statusCode?: number
   message?: string | string[]
   error?: string
-  data?: any
+  data?: T
   countData?: number
 }

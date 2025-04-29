@@ -1,6 +1,6 @@
 // import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -37,6 +37,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         permissions: [PERMISSION.PERMISSION, PERMISSION.PERMISSION_SHOW]
       }
     ]
+  },
+  {
+    label: 'Gestionar Sectores',
+    icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+    path: '/sectores',
+    permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
   },
   {
     label: 'Subscripción',
