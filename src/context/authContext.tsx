@@ -7,6 +7,7 @@ import { createUser, resetUser } from '@/redux/slices/user.slice'
 import { type ChildrenProps } from '@/models/common.model'
 import { useAuthLogin, useCheckToken } from '@/modules/auth/hooks/useAuth'
 import { type AuthLogin } from '@/modules/auth/models/login.model'
+import { userLogout } from '@/modules/auth/services/login.service'
 
 export const AuthContext = createContext<AuthContextState>({} as AuthContextState)
 
@@ -50,26 +51,6 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
 
   let subscribe = false
   useEffect(() => {
-    // const checkAuthStatus = async () => {
-    //   const token = getStorage(STORAGE_TOKEN)
-    //   if (!token) {
-    //     setStatus(authStatus.unauthenticated)
-    //     dispatch(resetUser())
-    //     removeStorage(STORAGE_USER)
-    //     return
-    //   }
-    //   try {
-    //     const responseUser = await checkToken({ token })
-    //     dispatch(createUser(responseUser))
-    //     setStatus(authStatus.authenticated)
-    //   } catch (error) {
-    //     removeStorage(STORAGE_TOKEN)
-    //     removeStorage(STORAGE_USER)
-    //     removeStorage(STORAGE_BRANCH)
-    //     setStatus(authStatus.unauthenticated)
-    //     dispatch(resetUser())
-    //   }
-    // }
     if (!subscribe) {
       void checkAuthStatus()
     }
@@ -78,12 +59,18 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
     }
   }, [])
 
-  const signOut = () => {
-    removeStorage(STORAGE_TOKEN)
-    removeStorage(STORAGE_USER)
-    removeStorage(STORAGE_BRANCH)
-    dispatch(resetUser())
-    setStatus(authStatus.unauthenticated)
+  const signOut = async () => {
+    try {
+      await userLogout()
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error)
+    } finally {
+      removeStorage(STORAGE_TOKEN)
+      removeStorage(STORAGE_USER)
+      removeStorage(STORAGE_BRANCH)
+      dispatch(resetUser())
+      setStatus(authStatus.unauthenticated)
+    }
   }
 
   const signWithEmailPassword = async (formData: AuthLogin) => {
