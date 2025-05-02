@@ -1,6 +1,7 @@
 export const PERMISSION_KEY = 'permissions'
 
 export enum PERMISSION {
+  // enum para los permisos
   // user
   USER = 'Usuario',
   USER_SHOW = 'Mostrar usuarios',
@@ -15,6 +16,7 @@ export enum PERMISSION {
   REALSTATE_CREATE = 'Crear inmobiliarias',
   REALSTATE_UPDATE = 'Actualizar inmobiliarias',
   REALSTATE_DELETE = 'Eliminar inmobiliarias',
+
   PROPERTY = 'Propiedad',
   PROPERTY_SHOW = 'Mostrar propiedades',
   PROPERTY_CREATE = 'Crear propiedades',
@@ -31,6 +33,7 @@ export enum PERMISSION {
 }
 
 export const modulePermissions = {
+  // modulePermissions se ocupa para mostrar los toogles
   usuario: [
     PERMISSION.USER,
     PERMISSION.USER_SHOW,
@@ -38,5 +41,19 @@ export const modulePermissions = {
     PERMISSION.ROLE_SHOW,
     PERMISSION.PERMISSION,
     PERMISSION.PERMISSION_SHOW
+  ],
+  sector: [
+    PERMISSION.SECTOR,
+    PERMISSION.SECTOR_SHOW,
+    PERMISSION.SECTOR_CREATE,
+    PERMISSION.SECTOR_UPDATE,
+    PERMISSION.SECTOR_DELETE
+  ],
+  realstate: [
+    PERMISSION.REALSTATE,
+    PERMISSION.REALSTATE_CREATE,
+    PERMISSION.REALSTATE_DELETE,
+    PERMISSION.REALSTATE_SHOW,
+    PERMISSION.REALSTATE_UPDATE
   ]
 }

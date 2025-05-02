@@ -25,6 +25,10 @@ export enum PrivateRoutes {
   PERMISSIONS = PrivateRoutes.USER + '/permisos',
   PERMISSIONS_CREATE = PrivateRoutes.PERMISSIONS + '/crear',
   PERMISSIONS_EDIT = PrivateRoutes.PERMISSIONS + '/:id',
+  // sectors puede que este mal
+  SECTORS = '/sectores',
+  SECTOR_CREATE = PrivateRoutes.SECTORS + '/crear',
+  SECTOR_EDIT = PrivateRoutes.SECTORS + '/:id',
 }
 
 export interface Route {
