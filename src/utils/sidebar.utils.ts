@@ -1,13 +1,21 @@
-// import { PrivateRoutes } from '@/models/routes.model'
-import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon } from 'lucide-react'
+import {
+  UserCogIcon,
+  UserIcon,
+  UsersIcon,
+  KeyIcon,
+  CreditCardIcon,
+  MapPinIcon,
+  FolderIcon,
+  NotebookIcon // ← nuevo icono sugerido
+} from 'lucide-react'
 import { createElement } from 'react'
+import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
 export interface MenuHeaderRoute {
   path?: string
   label: string
   icon?: JSX.Element
-  children?: MenuHeaderRoute[]
+  children?: MenuHeaderRoute[];
   permissions?: PERMISSION[]
 }
 
@@ -16,7 +24,14 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     label: 'Gestión de Usuarios',
     icon: createElement(UserCogIcon, { width: 20, height: 20 }),
     path: '/usuarios',
-    permissions: [PERMISSION.USER, PERMISSION.USER_SHOW, PERMISSION.ROLE, PERMISSION.ROLE_SHOW, PERMISSION.PERMISSION, PERMISSION.PERMISSION_SHOW],
+    permissions: [
+      PERMISSION.USER,
+      PERMISSION.USER_SHOW,
+      PERMISSION.ROLE,
+      PERMISSION.ROLE_SHOW,
+      PERMISSION.PERMISSION,
+      PERMISSION.PERMISSION_SHOW
+    ],
     children: [
       {
         path: '/usuarios',
@@ -42,7 +57,34 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     label: 'Gestionar Sectores',
     icon: createElement(MapPinIcon, { width: 20, height: 20 }),
     path: '/sectores',
-    permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
+    permissions: [
+      PERMISSION.SECTOR,
+      PERMISSION.SECTOR_SHOW,
+      PERMISSION.SECTOR_CREATE,
+      PERMISSION.SECTOR_UPDATE,
+      PERMISSION.SECTOR_DELETE
+    ]
+  },
+  {
+    label: 'Gestionar Categorías',
+    icon: createElement(FolderIcon, { width: 20, height: 20 }),
+    path: '/categorias',
+    permissions: [
+      PERMISSION.CATEGORY,
+      PERMISSION.CATEGORY_SHOW,
+      PERMISSION.CATEGORY_CREATE,
+      PERMISSION.CATEGORY_UPDATE,
+      PERMISSION.CATEGORY_DELETE
+    ]
+  },
+  {
+    label: 'Modalidades',
+    icon: createElement(NotebookIcon, { width: 20, height: 20 }),
+    path: '/modalidades',
+    permissions: [
+      PERMISSION.MODALITY,
+      PERMISSION.MODALITY_SHOW
+    ]
   },
   {
     label: 'Subscripción',

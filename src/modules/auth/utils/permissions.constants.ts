@@ -1,7 +1,6 @@
 export const PERMISSION_KEY = 'permissions'
 
 export enum PERMISSION {
-  // enum para los permisos
   // user
   USER = 'Usuario',
   USER_SHOW = 'Mostrar usuarios',
@@ -17,43 +16,68 @@ export enum PERMISSION {
   REALSTATE_UPDATE = 'Actualizar inmobiliarias',
   REALSTATE_DELETE = 'Eliminar inmobiliarias',
 
+  // property
   PROPERTY = 'Propiedad',
   PROPERTY_SHOW = 'Mostrar propiedades',
   PROPERTY_CREATE = 'Crear propiedades',
   PROPERTY_UPDATE = 'Actualizar propiedades',
   PROPERTY_DELETE = 'Eliminar propiedades',
 
+  // sector
   SECTOR = 'Sector',
   SECTOR_SHOW = 'Mostrar sectores',
   SECTOR_CREATE = 'Crear sectores',
   SECTOR_UPDATE = 'Actualizar sectores',
   SECTOR_DELETE = 'Eliminar sectores',
 
+  // category
+  CATEGORY = 'Categoría',
+  CATEGORY_SHOW = 'Mostrar categorías',
+  CATEGORY_CREATE = 'Crear categorías',
+  CATEGORY_UPDATE = 'Actualizar categorías',
+  CATEGORY_DELETE = 'Eliminar categorías',
+
+  // modality (nuevo)
+  MODALITY = 'Modalidad',
+  MODALITY_SHOW = 'Mostrar modalidades',
+
+  // subscripcion
   SUBSCRIPTION = 'Suscripcion',
 }
 
 export const modulePermissions = {
-  // modulePermissions se ocupa para mostrar los toogles
   usuario: [
     PERMISSION.USER,
     PERMISSION.USER_SHOW,
     PERMISSION.ROLE,
     PERMISSION.ROLE_SHOW,
     PERMISSION.PERMISSION,
-    PERMISSION.PERMISSION_SHOW
+    PERMISSION.PERMISSION_SHOW,
   ],
   sector: [
     PERMISSION.SECTOR,
     PERMISSION.SECTOR_SHOW,
     PERMISSION.SECTOR_CREATE,
     PERMISSION.SECTOR_UPDATE,
-    PERMISSION.SECTOR_DELETE
+    PERMISSION.SECTOR_DELETE,
   ],
   realstate: [
     PERMISSION.REALSTATE,
     PERMISSION.REALSTATE_CREATE,
     PERMISSION.REALSTATE_DELETE,
     PERMISSION.REALSTATE_SHOW,
-    PERMISSION.REALSTATE_UPDATE
-  ]
+    PERMISSION.REALSTATE_UPDATE,
+  ],
+  category: [
+    PERMISSION.CATEGORY,
+    PERMISSION.CATEGORY_SHOW,
+    PERMISSION.CATEGORY_CREATE,
+    PERMISSION.CATEGORY_UPDATE,
+    PERMISSION.CATEGORY_DELETE,
+  ],
+
+  modality: [
+    PERMISSION.MODALITY,
+    PERMISSION.MODALITY_SHOW,
+  ],
 }
