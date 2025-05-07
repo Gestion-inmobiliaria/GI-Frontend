@@ -43,6 +43,11 @@ export enum PrivateRoutes {
 
   MODALITIES = '/modalidades',
 
+  // state
+  STATE = '/state',
+  STATE_CREAR = PrivateRoutes.STATE + '/crear',
+  STATE_EDIT = PrivateRoutes.STATE + '/:id',
+
 }
 
 export interface Route {
