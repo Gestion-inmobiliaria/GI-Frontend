@@ -1,5 +1,6 @@
-import { STORAGE_BRANCH, STORAGE_TOKEN, STORAGE_USER, fetchData, setStorage } from '@/utils'
+import { STORAGE_BRANCH, STORAGE_TOKEN, STORAGE_USER, fetchData, getStorage, removeStorage, setStorage } from '@/utils'
 import { type AuthLogin } from '../models/login.model'
+import { AppConfig } from '@/config'
 
 const userLogin = async (url: string, { arg }: { arg: AuthLogin }): Promise<any> => {
   const options: RequestInit = {
@@ -25,4 +26,33 @@ const checkToken = async (url: string, { arg }: { arg: { token: string } }): Pro
   return response.data
 }
 
-export { userLogin, checkToken }
+const userLogout = async (): Promise<any> => {
+  try {
+    const token = getStorage(STORAGE_TOKEN)
+    if (!token) return true
+    
+    const options: RequestInit = {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+    
+    await fetchData(`${AppConfig.API_URL}/api/auth/logout`, options)
+    // Independientemente de la respuesta del servidor, limpiamos el almacenamiento local
+    removeStorage(STORAGE_TOKEN)
+    removeStorage(STORAGE_USER)
+    removeStorage(STORAGE_BRANCH)
+    return true
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error)
+    // Limpiamos de todas formas el almacenamiento local
+    removeStorage(STORAGE_TOKEN)
+    removeStorage(STORAGE_USER)
+    removeStorage(STORAGE_BRANCH)
+    return true
+  }
+}
+
+export { userLogin, checkToken, userLogout }

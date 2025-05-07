@@ -1,6 +1,6 @@
 // import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -49,5 +49,11 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
     path: '/subscripcion',
     permissions: [PERMISSION.SUBSCRIPTION]
+  },
+  {
+    label: 'Bitácora',
+    icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
+    path: '/bitacora',
+    permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW] // aqui esta, esto no estaba aware
   }
 ]
