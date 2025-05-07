@@ -24,12 +24,12 @@ export const PrivateAllRoutes: Route[] = [
   {
     path: PrivateRoutes.SETTINGS,
     element: createElement(SettingPage),
-    permissions: [] as PERMISSION[]
+    permissions: [PERMISSION.SUBSCRIPTION]
   },
   {
     path: PrivateRoutes.SUBSCRIPTION,
     element: createElement(SubscriptionPage),
-    permissions: [PERMISSION.SUBSCRIPTION]
+    permissions: [] as PERMISSION[]
   },
   {
     path: PrivateRoutes.SUBSCRIPTION_PLAN,
