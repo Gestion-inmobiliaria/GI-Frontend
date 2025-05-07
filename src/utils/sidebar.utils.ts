@@ -49,5 +49,20 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
     path: '/subscripcion',
     permissions: [PERMISSION.SUBSCRIPTION]
-  }
+  },
+  {
+    label: 'Gestionar Inmuebles',
+    icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+    path: '/state',
+    permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
+    children:[
+      {
+        label: 'Gestionar Inmueble',
+        icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+        path: '/state',
+        permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
+      },      
+    ] 
+  },
+
 ]

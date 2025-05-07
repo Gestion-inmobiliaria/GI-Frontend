@@ -29,6 +29,11 @@ export enum PrivateRoutes {
   SECTORS = '/sectores',
   SECTOR_CREATE = PrivateRoutes.SECTORS + '/crear',
   SECTOR_EDIT = PrivateRoutes.SECTORS + '/:id',
+
+  // state 
+  STATE = '/state',
+  STATE_CREAR = PrivateRoutes.STATE + '/crear',
+  STATE_EDIT = PrivateRoutes.STATE + '/:id',
 }
 
 export interface Route {
