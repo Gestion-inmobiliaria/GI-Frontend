@@ -45,43 +45,30 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     ]
   },
   {
-    label: 'Gestionar Sectores',
+    label: 'Gestionar Inmobiliarias',
     icon: createElement(MapPinIcon, { width: 20, height: 20 }),
-    path: '/sectores',
+    path: '/realstate',
     permissions: [
       PERMISSION.SECTOR,
       PERMISSION.SECTOR_SHOW,
       PERMISSION.SECTOR_CREATE,
       PERMISSION.SECTOR_UPDATE,
       PERMISSION.SECTOR_DELETE
+    ],
+    children: [
+      {
+        label: 'Gestionar Sectores',
+        icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+        path: '/sectores',
+        permissions: [
+          PERMISSION.SECTOR,
+          PERMISSION.SECTOR_SHOW,
+          PERMISSION.SECTOR_CREATE,
+          PERMISSION.SECTOR_UPDATE,
+          PERMISSION.SECTOR_DELETE
+        ]
+      }
     ]
-  },
-  {
-    label: 'Gestionar Categorías',
-    icon: createElement(FolderIcon, { width: 20, height: 20 }),
-    path: '/categorias',
-    permissions: [
-      PERMISSION.CATEGORY,
-      PERMISSION.CATEGORY_SHOW,
-      PERMISSION.CATEGORY_CREATE,
-      PERMISSION.CATEGORY_UPDATE,
-      PERMISSION.CATEGORY_DELETE
-    ]
-  },
-  {
-    label: 'Modalidades',
-    icon: createElement(NotebookIcon, { width: 20, height: 20 }),
-    path: '/modalidades',
-    permissions: [
-      PERMISSION.MODALITY,
-      PERMISSION.MODALITY_SHOW
-    ]
-  },
-  {
-    label: 'Subscripción',
-    icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
-    path: '/subscripcion',
-    permissions: [PERMISSION.SUBSCRIPTION]
   },
   {
     label: 'Gestionar Inmuebles',
@@ -93,9 +80,36 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Gestionar Inmueble',
         icon: createElement(MapPinIcon, { width: 20, height: 20 }),
         path: '/state',
-        permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
+        permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
+      },
+      {
+        label: 'Modalidades',
+        icon: createElement(NotebookIcon, { width: 20, height: 20 }),
+        path: '/modalidades',
+        permissions: [
+          PERMISSION.MODALITY,
+          PERMISSION.MODALITY_SHOW
+        ]
+      },
+      {
+        label: 'Gestionar Categorías',
+        icon: createElement(FolderIcon, { width: 20, height: 20 }),
+        path: '/categorias',
+        permissions: [
+          PERMISSION.CATEGORY,
+          PERMISSION.CATEGORY_SHOW,
+          PERMISSION.CATEGORY_CREATE,
+          PERMISSION.CATEGORY_UPDATE,
+          PERMISSION.CATEGORY_DELETE
+        ]
       }
     ]
+  },
+  {
+    label: 'Subscripción',
+    icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
+    path: '/subscripcion',
+    permissions: [PERMISSION.SUBSCRIPTION]
   },
   {
     label: 'Bitácora',

@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { getCategory, createCategory, updateCategory } from '@/services/category.service'
-import { Category } from '@/models/category.model'
-import { ApiResponse } from '@/models/api-response.model'
+import { type Category } from '@/models/category.model'
+import { type ApiResponse } from '@/models/api-response.model'
 import { PrivateRoutes } from '@/models/routes.model'
 
 export default function CategoryFormPage() {
@@ -15,15 +15,14 @@ export default function CategoryFormPage() {
   const isEdit = Boolean(id)
 
   const [category, setCategory] = useState<Partial<Category>>({
-    name: '',
-   
+    name: ''
   })
 
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (isEdit && id) {
-      loadCategory(id)
+      void loadCategory(id)
     }
   }, [id])
 
@@ -44,6 +43,7 @@ export default function CategoryFormPage() {
 
   const handleSubmit = async () => {
     setLoading(true)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const action = isEdit ? updateCategory(id!, category) : createCategory(category as any)
     const response = await action
 
@@ -51,7 +51,7 @@ export default function CategoryFormPage() {
       toast.success(`Categoría ${isEdit ? 'actualizada' : 'creada'} correctamente`)
       navigate(PrivateRoutes.CATEGORIES)
     } else {
-      toast.error(response.message || 'Error al guardar la categoría')
+      toast.error(response.message ?? 'Error al guardar la categoría')
     }
 
     setLoading(false)
@@ -68,18 +68,16 @@ export default function CategoryFormPage() {
           <Label htmlFor="name">Nombre</Label>
           <Input
             id="name"
-            value={category.name || ''}
-            onChange={(e) => handleChange('name', e.target.value)}
+            value={category.name ?? ''}
+            onChange={(e) => { handleChange('name', e.target.value) }}
           />
         </div>
-
-    
 
         <div className="flex justify-end gap-2 pt-4">
           <Button
             variant="outline"
             type="button"
-            onClick={() => navigate(PrivateRoutes.CATEGORIES)}
+            onClick={() => { navigate(PrivateRoutes.CATEGORIES) }}
             disabled={loading}
           >
             Cancelar

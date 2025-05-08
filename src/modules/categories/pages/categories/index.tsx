@@ -9,12 +9,12 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { PrivateRoutes } from '@/models/routes.model'
 import { getCategories, deleteCategory } from '@/services/category.service'
-import { Category } from '@/models/category.model'
+import { type Category } from '@/models/category.model'
 import { useAuthorization } from '@/hooks/useAuthorization'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -53,13 +53,12 @@ export default function CategoriesPage() {
     }
   }
 
-
   useEffect(() => {
-    fetchCategories()
+    void fetchCategories()
   }, [searchTerm])
 
   const handleSearch = () => {
-    fetchCategories()
+    void fetchCategories()
   }
 
   const handleDelete = async (id: string) => {
@@ -67,7 +66,7 @@ export default function CategoriesPage() {
       const response = await deleteCategory(id)
       if (response.statusCode === 200) {
         toast.success('Categoría eliminada correctamente')
-        fetchCategories()
+        void fetchCategories()
       } else {
         toast.error('Error al eliminar la categoría')
         console.error('Respuesta del servidor:', response)
@@ -87,7 +86,7 @@ export default function CategoriesPage() {
           <Input
             placeholder="Buscar por nombre..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setSearchTerm(e.target.value) }}
             className="max-w-sm"
           />
           <Button
@@ -101,7 +100,7 @@ export default function CategoriesPage() {
 
         {canCreate && (
           <Button
-            onClick={() => navigate(PrivateRoutes.CATEGORY_CREATE)}
+            onClick={() => { navigate(PrivateRoutes.CATEGORY_CREATE) }}
           >
             <Plus className="h-4 w-4 mr-2" /> Nueva Categoría
           </Button>
@@ -118,8 +117,8 @@ export default function CategoriesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, index) => (
+            {loading
+              ? (Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={index}>
                   <TableCell><Skeleton className="h-5 w-32" /></TableCell>
 
