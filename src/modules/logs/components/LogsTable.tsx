@@ -22,9 +22,9 @@ export const LogsTable: React.FC<LogsTableProps> = ({ logs, isLoading }) => {
     if (!dateString) return 'Fecha no disponible'
 
     try {
-      const date = new Date(dateString);
+      const date = new Date(dateString)
       if (isNaN(date.getTime())) {
-        return 'Fecha no disponible';
+        return 'Fecha no disponible'
       }
 
       return date.toLocaleString('es-ES', {
