@@ -44,7 +44,7 @@ export enum PERMISSION {
   CATEGORY_UPDATE = 'Actualizar categorías',
   CATEGORY_DELETE = 'Eliminar categorías',
 
-  // modality (nuevo)
+  // modality
   MODALITY = 'Modalidad',
   MODALITY_SHOW = 'Mostrar modalidades',
 

@@ -11,9 +11,9 @@ export const ENDPOINTS = {
   ROLE: '/api/role',
   PERMISSION: '/api/permission',
 
-  //property
+  // property
   PROPERTY: '/api/property',
-  //ubicacion
+  // ubicacion
   UBICACION: '/api/ubicacion'
 }
 

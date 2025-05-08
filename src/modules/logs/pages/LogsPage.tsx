@@ -16,7 +16,7 @@ const LogsPage: React.FC = () => {
     handlePageChange
   } = useLogs()
 
-  const totalPages = Math.ceil((totalLogs || 0) / (queryParams.limit || 10))
+  const totalPages = Math.ceil((totalLogs || 0) / (queryParams.limit ?? 10))
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -27,9 +27,9 @@ const LogsPage: React.FC = () => {
         </p>
       </div>
 
-      <LogsFilter 
-        onSearch={handleSearch} 
-        onDateFilter={handleDateFilter} 
+      <LogsFilter
+        onSearch={handleSearch}
+        onDateFilter={handleDateFilter}
       />
 
       <LogsTable logs={logs} isLoading={isLoading} />
@@ -37,7 +37,7 @@ const LogsPage: React.FC = () => {
       {totalPages > 1 && (
         <div className="flex justify-center mt-6">
           <CustomPagination
-            page={queryParams.page || 1}
+            page={queryParams.page ?? 1}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
@@ -55,4 +55,4 @@ interface LogsPageComponent extends React.FC {
 const LogsPageWithPermissions = LogsPage as LogsPageComponent
 LogsPageWithPermissions.requiredPermissions = [PERMISSION.LOG_SHOW]
 
-export default LogsPageWithPermissions 
+export default LogsPageWithPermissions
