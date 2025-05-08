@@ -24,7 +24,6 @@ export enum PERMISSION {
   PROPERTY_DELETE = 'Eliminar propiedades',
 
   // sector
-  // sector
   SECTOR = 'Sector',
   SECTOR_SHOW = 'Mostrar sectores',
   SECTOR_CREATE = 'Crear sectores',
