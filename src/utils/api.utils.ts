@@ -9,7 +9,12 @@ export const ENDPOINTS = {
   // user
   USER: '/api/user',
   ROLE: '/api/role',
-  PERMISSION: '/api/permission'
+  PERMISSION: '/api/permission',
+
+  // property
+  PROPERTY: '/api/property',
+  // ubicacion
+  UBICACION: '/api/ubicacion'
 }
 
 export const API_BASEURL = AppConfig.API_URL
