@@ -14,23 +14,40 @@ export enum PrivateRoutes {
   SUBSCRIPTION = '/subscripcion',
   SUBSCRIPTION_PLAN = '/subscripcion/:id',
   SUBSCRIPTION_PLAN_SUCCESS = '/subscripcion/:id/success',
+
+  // Real state
   REALSTATE = '/realstate',
-  // users
+
+  // Users
   USER = '/usuarios',
-  USER_CREAR = PrivateRoutes.USER + '/crear',
-  USER_EDIT = PrivateRoutes.USER + '/:id',
-  ROLES = PrivateRoutes.USER + '/roles',
-  ROLE_FORM = PrivateRoutes.ROLES + '/crear',
-  ROLE_EDIT = PrivateRoutes.ROLES + '/:id',
-  PERMISSIONS = PrivateRoutes.USER + '/permisos',
-  PERMISSIONS_CREATE = PrivateRoutes.PERMISSIONS + '/crear',
-  PERMISSIONS_EDIT = PrivateRoutes.PERMISSIONS + '/:id',
-  // sectors puede que este mal
+  USER_CREAR = '/usuarios/crear',
+  USER_EDIT = '/usuarios/:id',
+  ROLES = '/usuarios/roles',
+  ROLE_FORM = '/usuarios/roles/crear',
+  ROLE_EDIT = '/usuarios/roles/:id',
+  PERMISSIONS = '/usuarios/permisos',
+  PERMISSIONS_CREATE = '/usuarios/permisos/crear',
+  PERMISSIONS_EDIT = '/usuarios/permisos/:id',
+
+  // Sectors
   SECTORS = '/sectores',
-  SECTOR_CREATE = PrivateRoutes.SECTORS + '/crear',
-  SECTOR_EDIT = PrivateRoutes.SECTORS + '/:id',
-  // logs
+  SECTOR_CREATE = '/sectores/crear',
+  SECTOR_EDIT = '/sectores/:id',
+
   LOGS = '/bitacora',
+
+  // Categories (nuevo)
+  CATEGORIES = '/categorias',
+  CATEGORY_CREATE = '/categorias/crear',
+  CATEGORY_EDIT = '/categorias/:id',
+
+  MODALITIES = '/modalidades',
+
+  // state
+  STATE = '/state',
+  STATE_CREAR = PrivateRoutes.STATE + '/crear',
+  STATE_EDIT = PrivateRoutes.STATE + '/:id',
+
 }
 
 export interface Route {

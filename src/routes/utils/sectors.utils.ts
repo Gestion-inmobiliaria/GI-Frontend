@@ -21,4 +21,4 @@ export const sectorRoutes: Route[] = [
     element: createElement(SectorFormPage, { buttonText: 'Editar Sector', title: 'Actualizar Sector' }),
     permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_UPDATE]
   }
-] 
+]

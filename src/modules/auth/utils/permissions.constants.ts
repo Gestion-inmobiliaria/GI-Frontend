@@ -1,7 +1,6 @@
 export const PERMISSION_KEY = 'permissions'
 
 export enum PERMISSION {
-  // enum para los permisos
   // user
   USER = 'Usuario',
   USER_SHOW = 'Mostrar usuarios',
@@ -37,10 +36,21 @@ export enum PERMISSION {
 
   // subscripcion
   SUBSCRIPTION = 'Suscripcion',
+
+  // category
+  CATEGORY = 'Categoría',
+  CATEGORY_SHOW = 'Mostrar categorías',
+  CATEGORY_CREATE = 'Crear categorías',
+  CATEGORY_UPDATE = 'Actualizar categorías',
+  CATEGORY_DELETE = 'Eliminar categorías',
+
+  // modality (nuevo)
+  MODALITY = 'Modalidad',
+  MODALITY_SHOW = 'Mostrar modalidades',
+
 }
 
 export const modulePermissions = {
-  // modulePermissions se ocupa para mostrar los toogles
   usuario: [
     PERMISSION.USER,
     PERMISSION.USER_SHOW,
@@ -65,7 +75,7 @@ export const modulePermissions = {
   ],
   log: [
     PERMISSION.LOG,
-    PERMISSION.LOG_SHOW,
+    PERMISSION.LOG_SHOW
 
   ]
 }

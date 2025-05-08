@@ -1,7 +1,8 @@
 import { createElement, lazy } from 'react'
-import { userRoutes, sectorRoutes, logRoutes } from '.'
+import { userRoutes, sectorRoutes, categoryRoutes, modalityRoutes, logRoutes } from '.'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
+import { stateRoutes } from './state.utils'
 
 const DashboardPage = lazy(() => import('@modules/dashboard'))
 const SettingPage = lazy(() => import('@modules/settings/pages/setting'))
@@ -24,12 +25,12 @@ export const PrivateAllRoutes: Route[] = [
   {
     path: PrivateRoutes.SETTINGS,
     element: createElement(SettingPage),
-    permissions: [] as PERMISSION[]
+    permissions: [PERMISSION.SUBSCRIPTION]
   },
   {
     path: PrivateRoutes.SUBSCRIPTION,
     element: createElement(SubscriptionPage),
-    permissions: [PERMISSION.SUBSCRIPTION]
+    permissions: [] as PERMISSION[]
   },
   {
     path: PrivateRoutes.SUBSCRIPTION_PLAN,
@@ -43,5 +44,8 @@ export const PrivateAllRoutes: Route[] = [
   },
   ...userRoutes,
   ...sectorRoutes,
+  ...stateRoutes,
+  ...categoryRoutes,
+  ...modalityRoutes,
   ...logRoutes
 ]
