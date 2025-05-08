@@ -115,6 +115,6 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     label: 'Bitácora',
     icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
     path: '/bitacora',
-    permissions: [] as PERMISSION[]
+    permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
   }
 ]
