@@ -7,7 +7,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { DateRange } from 'react-day-picker'
+import { type DateRange } from 'react-day-picker'
 
 interface LogsFilterProps {
   onSearch: (search: string) => void
@@ -30,7 +30,7 @@ export const LogsFilter: React.FC<LogsFilterProps> = ({ onSearch, onDateFilter }
 
   const handleDateChange = (range: DateRange | undefined) => {
     setDateRange(range)
-    
+
     if (range?.from) {
       const fromDate = format(range.from, 'yyyy-MM-dd')
       const toDate = range.to ? format(range.to, 'yyyy-MM-dd') : undefined
@@ -38,7 +38,7 @@ export const LogsFilter: React.FC<LogsFilterProps> = ({ onSearch, onDateFilter }
     } else {
       onDateFilter(undefined, undefined)
     }
-    
+
     if (range?.from && range.to) {
       setIsCalendarOpen(false)
     }
@@ -66,7 +66,7 @@ export const LogsFilter: React.FC<LogsFilterProps> = ({ onSearch, onDateFilter }
             />
           </div>
         </form>
-        
+
         <div className="flex flex-col sm:flex-row gap-2">
           <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <PopoverTrigger asChild>
@@ -96,7 +96,7 @@ export const LogsFilter: React.FC<LogsFilterProps> = ({ onSearch, onDateFilter }
               />
             </PopoverContent>
           </Popover>
-          
+
           <Button variant="ghost" onClick={clearFilters}>
             Limpiar filtros
           </Button>
@@ -104,4 +104,4 @@ export const LogsFilter: React.FC<LogsFilterProps> = ({ onSearch, onDateFilter }
       </div>
     </Card>
   )
-} 
+}
