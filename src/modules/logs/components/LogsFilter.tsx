@@ -35,24 +35,6 @@ interface LogsFilterProps {
   onSearch: (search: string) => void
   onDateFilter: (fromDate?: string, toDate?: string) => void
 }
-const data = {
-  id: 'f4255b35-dd3b-4115-8ca2-bab238d5b81d',
-  timestamp: '2025-05-03T20:59:25.655Z',
-  user: 'anonymous',
-  ip: '127.0.0.1',
-  action: 'Creó un registro en auth',
-  metadata: {
-    body: {
-      email: 'juan@gmail.com',
-      password: '**REDACTED**'
-    },
-    method: 'POST',
-    params: {},
-    query: {},
-    timestamp: '2025-05-03T20:59:25.654Z',
-    url: '/api/auth/customer/login'
-  }
-}
 
 const items = [
   { id: 'id', label: 'id' },
