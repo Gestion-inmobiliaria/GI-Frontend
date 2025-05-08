@@ -10,4 +10,4 @@ export const logRoutes: Route[] = [
     element: createElement(LogsPage),
     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
   }
-] 
+]

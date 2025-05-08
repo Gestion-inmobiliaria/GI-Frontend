@@ -13,4 +13,4 @@ export interface LogListParams {
   search?: string
   fromDate?: string
   toDate?: string
-} 
+}

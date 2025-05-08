@@ -7,6 +7,7 @@ import { useAuthorization } from '@/hooks/useAuthorization'
 import { useSelector } from 'react-redux'
 import { type RootState } from '@/redux/store'
 import DashboardAdminPage from '@/modules/dashboard/admin'
+import LogsPageWithPermissions from '@/modules/logs/pages/LogsPage'
 
 const Layout = lazy(() => import('@/layout/index'))
 
@@ -44,7 +45,8 @@ const Private = () => {
         </SidebarProvider>
       }
     >
-      <Route path='/app' element={<DashboardAdminPage />} />
+      <Route path="/app" element={<DashboardAdminPage />} />
+      <Route path="/bitacora" element={<LogsPageWithPermissions />} />
     </Route>
   )
 
