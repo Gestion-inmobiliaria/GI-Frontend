@@ -1,1 +1,5 @@
 export * from './users.utils'
+export * from './sectors.utils'
+export * from './categories.utils'
+export * from './modalities.utils'
+export * from './logs.utils'

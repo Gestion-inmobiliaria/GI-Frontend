@@ -1,8 +1,6 @@
-/* eslint-disable multiline-ternary */
 import Pagination from '@/components/shared/pagination'
 import Skeleton from '@/components/shared/skeleton'
 import { Badge } from '@/components/ui/badge'
-// import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -18,19 +16,11 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-// import { AppConfig } from '@/config'
 import { useHeader } from '@/hooks'
 import { useGetAllResource } from '@/hooks/useApiResource'
-// import { PrivateRoutes } from '@/models'
-// import { type RootState } from '@/redux/store'
 import { ENDPOINTS } from '@/utils'
-// import { DropdownMenu } from '@radix-ui/react-dropdown-menu'
-// import { ArrowRight } from 'lucide-react'
-// import { useSelector } from 'react-redux'
-// import { useNavigate } from 'react-router-dom'
 const DashboardAdminPage = (): React.ReactNode => {
   useHeader([{ label: 'Dashboard' }])
-  // const data: any = useSelector((state: RootState) => state.user)
   const {
     allResource: realStates,
     isLoading,
@@ -43,8 +33,6 @@ const DashboardAdminPage = (): React.ReactNode => {
     endpoint: ENDPOINTS.REALSTATE,
     isPagination: true
   })
-
-  // const navigate = useNavigate()
 
   return (
     <>
@@ -84,101 +72,6 @@ const DashboardAdminPage = (): React.ReactNode => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {/* <DropdownMenu
-                          onOpenChange={() => {
-                            setIsDialogOpen(false)
-                          }}
-                        >
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                navigate(`${PrivateRoutes.USER}/${user.id}`)
-                              }}
-                            >
-                              Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="p-0">
-                              <AlertDialog
-                                open={isDialogOpen}
-                                onOpenChange={setIsDialogOpen}
-                              >
-                                <AlertDialogTrigger
-                                  asChild
-                                  className="w-full px-2 py-1.5"
-                                >
-                                  <div
-                                    onClick={(event) => {
-                                      event.stopPropagation()
-                                    }}
-                                    className={`${
-                                      user.isActive ? 'text-danger' : ''
-                                    } flex items-center`}
-                                  >
-                                    {user.isActive ? (
-                                      <>
-                                        <Trash className="mr-2 h-4 w-4" />
-                                        Eliminar
-                                      </>
-                                    ) : (
-                                      'Activar'
-                                    )}
-                                  </div>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                      {user.isActive
-                                        ? 'Eliminar usuario'
-                                        : 'Activar usuario'}
-                                    </AlertDialogTitle>
-                                  </AlertDialogHeader>
-                                  {user.isActive ? (
-                                    <>
-                                      <AlertDialogDescription>
-                                        Esta acción eliminará el usuario, no se
-                                        puede deshacer.
-                                      </AlertDialogDescription>
-                                      <AlertDialogDescription>
-                                        ¿Estás seguro que deseas continuar?
-                                      </AlertDialogDescription>
-                                    </>
-                                  ) : (
-                                    <AlertDialogDescription>
-                                      Para activar el usuario deberá contactarse
-                                      con un administrador del sistema.
-                                    </AlertDialogDescription>
-                                  )}
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="h-fit">
-                                      Cancelar
-                                    </AlertDialogCancel>
-                                    {user.isActive && (
-                                      <AlertDialogAction
-                                        className="h-full"
-                                        onClick={() => {
-                                          deletePermanentlyUser(user.id)
-                                        }}
-                                      >
-                                        Continuar
-                                      </AlertDialogAction>
-                                    )}
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu> */}
                       </TableCell>
                     </TableRow>
                   ))

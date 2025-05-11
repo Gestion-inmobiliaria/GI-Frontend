@@ -106,6 +106,134 @@ const PaginationEllipsis = ({
 )
 PaginationEllipsis.displayName = "PaginationEllipsis"
 
+interface CustomPaginationProps {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+const CustomPagination: React.FC<CustomPaginationProps> = ({
+  page,
+  totalPages,
+  onPageChange,
+}) => {
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+    
+    // Botón anterior
+    items.push(
+      <PaginationItem key="prev">
+        <PaginationPrevious 
+          onClick={() => page > 1 && onPageChange(page - 1)}
+          className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+        />
+      </PaginationItem>
+    );
+
+    // Generar páginas visibles
+    if (totalPages <= maxVisiblePages) {
+      // Mostrar todas las páginas si hay pocas
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              isActive={page === i}
+              onClick={() => onPageChange(i)}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // Lógica para mostrar páginas con elipsis
+      const leftSiblingIndex = Math.max(page - 1, 1);
+      const rightSiblingIndex = Math.min(page + 1, totalPages);
+      
+      const shouldShowLeftDots = leftSiblingIndex > 2;
+      const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
+      
+      // Siempre mostrar página 1
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink 
+            isActive={page === 1}
+            onClick={() => onPageChange(1)}
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+      
+      // Mostrar puntos suspensivos izquierdos si es necesario
+      if (shouldShowLeftDots) {
+        items.push(
+          <PaginationItem key="leftDots">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+      
+      // Páginas cercanas a la actual
+      for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+        if (i === 1 || i === totalPages) continue; // Evitar duplicar primera y última página
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              isActive={page === i}
+              onClick={() => onPageChange(i)}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+      
+      // Mostrar puntos suspensivos derechos si es necesario
+      if (shouldShowRightDots) {
+        items.push(
+          <PaginationItem key="rightDots">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+      
+      // Siempre mostrar última página
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink 
+            isActive={page === totalPages}
+            onClick={() => onPageChange(totalPages)}
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    
+    // Botón siguiente
+    items.push(
+      <PaginationItem key="next">
+        <PaginationNext 
+          onClick={() => page < totalPages && onPageChange(page + 1)}
+          className={page >= totalPages ? "pointer-events-none opacity-50" : ""}
+        />
+      </PaginationItem>
+    );
+    
+    return items;
+  };
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        {renderPaginationItems()}
+      </PaginationContent>
+    </Pagination>
+  );
+};
+
 export {
   Pagination,
   PaginationContent,
@@ -114,4 +242,5 @@ export {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  CustomPagination
 }
