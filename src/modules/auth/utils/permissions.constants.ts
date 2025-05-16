@@ -48,6 +48,9 @@ export enum PERMISSION {
   MODALITY = 'Modalidad',
   MODALITY_SHOW = 'Mostrar modalidades',
 
+  // map
+  MAP_VIEW = 'Ver mapa'
+
 }
 
 export const modulePermissions = {
@@ -77,5 +80,8 @@ export const modulePermissions = {
     PERMISSION.LOG,
     PERMISSION.LOG_SHOW
 
+  ],
+  mapa: [
+    PERMISSION.MAP_VIEW
   ]
 }

@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
-import { format } from 'date-fns'   //PaRA FORMATEAR FECHAS instalarlo si no hay
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+//import { useNavigate } from 'react-router-dom'
+import { format } from 'date-fns'
 import { toast } from 'sonner'
+import { useHeader } from '@/hooks'
 import { getModalities } from '@/services/modality.service'
 import { Modality } from '@/models/modality.model'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Skeleton from '@/components/shared/skeleton'
+import { PrivateRoutes } from '@/models'
 
 export default function ModalitiesPage() {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Modalidades' }
+  ])
+
+ // const navigate = useNavigate()
   const [modalities, setModalities] = useState<Modality[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -39,38 +42,37 @@ export default function ModalitiesPage() {
   }, [])
 
   return (
-    <div className="container p-6">
-      <h1 className="text-2xl font-bold mb-6">Modalidades Registradas</h1>
-      <div className="rounded-md border">
+    <section className="grid gap-4 overflow-hidden w-full relative">
      
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>        
-              <TableHead>Creado el</TableHead> {/* ← nueva columna */}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading
-              ? Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell><Skeleton className="h-5 w-40" /></TableCell>
-                 
-                  <TableCell><Skeleton className="h-5 w-60" /></TableCell>
+      <Card>
+        <CardHeader>
+          <CardTitle>Modalidades Registradas</CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-hidden relative w-full">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Fecha de Registro</TableHead>
                 </TableRow>
-              ))
-              : modalities.map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell>{m.name}</TableCell>
-                
-                  <TableCell>{format(new Date(m.createdAt), 'dd/MM/yyyy HH:mm')}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-
-      </div>
-    </div>
+              </TableHeader>
+              <TableBody>
+                {loading
+                  ? <Skeleton rows={5} columns={2} />
+                  : modalities.map((modality) => (
+                      <TableRow key={modality.id}>
+                        <TableCell>{modality.name}</TableCell>
+                        <TableCell>{format(new Date(modality.createdAt), 'dd/MM/yyyy HH:mm')}</TableCell>
+                      </TableRow>
+                    ))
+                }
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </section>
   )
 }

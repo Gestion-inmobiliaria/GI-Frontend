@@ -48,6 +48,9 @@ export enum PrivateRoutes {
   STATE_CREAR = PrivateRoutes.STATE + '/crear',
   STATE_EDIT = PrivateRoutes.STATE + '/:id',
 
+  //map
+  MAPA = '/mapa' 
+
 }
 
 export interface Route {
