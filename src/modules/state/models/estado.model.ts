@@ -1,4 +1,8 @@
 export enum ESTADO {
   DISPONIBLE = 'disponible',
-  OCUPADO = 'ocupado',
+  RESERVADO= 'reservado',
+  VENDIDO = 'vendido',
+  ALQUILADO = 'alquilado',
+  ANTICRETADO= 'anticretado',
+  INACTIVO = 'inactivo',
 }
