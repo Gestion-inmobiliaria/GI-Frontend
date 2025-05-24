@@ -23,7 +23,7 @@ export default function MapaPage() {
   const [habitacionesMin, setHabitacionesMin] = useState(1)
   const [sector, setSector] = useState('')
   const [modalidad, setModalidad] = useState('')
-  const [filtrosActivos, setFiltrosActivos] = useState(false)
+  const [, setFiltrosActivos] = useState(false)
 
   // Estados para listas de sectores y modalidades
   const [sectores, setSectores] = useState<{ id: string, name: string }[]>([])

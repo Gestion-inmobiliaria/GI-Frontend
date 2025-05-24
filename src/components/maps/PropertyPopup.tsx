@@ -7,7 +7,7 @@ interface Props {
     index: number
 }
 
-export default function PropertyPopup({ property, index }: Props) {
+export default function PropertyPopup({ property }: Props) {
     const navigate = useNavigate()
 
     // Usar la imagen real del inmueble (o placeholder si no tiene)
