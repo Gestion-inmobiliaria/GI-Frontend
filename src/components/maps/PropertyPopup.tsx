@@ -1,6 +1,7 @@
 import { Property } from '@/models/property.model'
 import { useNavigate } from 'react-router-dom'
-
+import { BedDouble, Bath, CarFront, LandPlot, CircleDot } from 'lucide-react'
+import { Eye } from 'lucide-react';
 interface Props {
     property: Property
     index: number
@@ -9,32 +10,43 @@ interface Props {
 export default function PropertyPopup({ property, index }: Props) {
     const navigate = useNavigate()
 
-    const mockImages = [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
-        'https://images.unsplash.com/photo-1580587771525-78b9dba3b914',
-        'https://images.unsplash.com/photo-1570129477492-45c003edd2be'
-    ]
-
-    const imageUrl = mockImages[index % mockImages.length]
+    // Usar la imagen real del inmueble (o placeholder si no tiene)
+    const imageUrl = property.imagenes?.[0]?.url ?? 'https://via.placeholder.com/300x200?text=Sin+imagen'
 
     return (
-        <div className="w-[220px] text-sm">
+        <div className="w-[250px] text-sm space-y-1">
             <img
                 src={imageUrl}
                 alt="Imagen propiedad"
                 className="w-full h-24 object-cover rounded mb-2"
             />
-            <strong className="text-base">{property.category?.name}</strong><br />
-            {property.descripcion.slice(0, 60)}...<br />
+            <strong className="text-base">{property.category?.name || 'Sin categoría'}</strong><br />
+            <span className="text-muted-foreground">{property.descripcion.slice(0, 60)}...</span><br />
             <span className="text-green-600 font-semibold">{property.precio} USD</span><br />
-            <div className="text-xs text-gray-500 mb-1">
-                {property.modality?.name} – {property.sector?.name}
+            <div className="text-xs text-gray-500">
+                {property.modality?.name || 'Sin modalidad'} – {property.sector?.name || 'Sin sector'}
             </div>
+
+            {/* Nueva información añadida */}
+            <div className="grid grid-cols-2 gap-1 text-xs">
+                <div className="flex items-center gap-1"><LandPlot className="w-3 h-3" /> {property.area} m²</div>
+                <div className="flex items-center gap-1"><BedDouble className="w-3 h-3" /> {property.NroHabitaciones} Habitaciones</div>
+                <div className="flex items-center gap-1"><Bath className="w-3 h-3" /> {property.NroBanos} baños</div>
+                <div className="flex items-center gap-1"><CarFront className="w-3 h-3" /> {property.NroEstacionamientos} garaje</div>
+                <div className="flex items-center gap-1"><CircleDot className="w-3 h-3" /> {property.estado || 'Sin estado'}</div>
+            </div>
+
+            {/* Mostrar agente si existe 
+      <div className="text-xs text-gray-500">
+        Agente: {property.user?.name || 'No asignado'}
+      </div>
+      */}
+
             <button
-                onClick={() => navigate(`/inmueble/${property.id}`)}
-                className="text-blue-600 underline"
+                onClick={() => navigate(`/state/detalle/${property.id}`)}
+                className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-3 py-1 rounded transition-colors duration-200 w-full text-center"
             >
-                Ver detalles
+                <Eye className="w-4 h-4" /> Ver detalles
             </button>
         </div>
     )

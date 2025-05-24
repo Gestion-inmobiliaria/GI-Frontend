@@ -5,7 +5,7 @@ import { generateQueryParams } from '@/utils'
 
 export const filterStateDefault: FilterOptions = {
   offset: 0,
-  limit: 5,
+  limit: 90,
   order: Order.ASC
 }
 
