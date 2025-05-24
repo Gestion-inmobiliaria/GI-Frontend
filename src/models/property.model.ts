@@ -7,7 +7,7 @@ export interface Property {
   NroHabitaciones: number
   NroBanos: number
   NroEstacionamientos: number
-
+  
   ubicacion: {
     id: string
     direccion: string
@@ -31,4 +31,10 @@ export interface Property {
     id: string
     name: string
   }
+  imagenes: Imagen[]  
+}
+export interface Imagen {
+  id: string
+  url: string
+  descripcion?: string
 }
