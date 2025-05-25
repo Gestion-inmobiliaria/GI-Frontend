@@ -34,6 +34,8 @@ const updateState = async (url: string, { arg }: { arg: UpdateState }): Promise<
       NroHabitaciones: arg?.NroHabitaciones,
       NroBanos: arg?.NroBanos,
       NroEstacionamientos: arg?.NroEstacionamientos,
+      comision: arg.comision,
+      condicion_Compra: arg.condicion_Compra,
       user: arg?.user,
       category: arg?.category,
       modality: arg?.modality,

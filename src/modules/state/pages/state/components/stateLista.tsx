@@ -127,7 +127,7 @@ export function DataTableDemo() {
     ])
   
     const navigate = useNavigate()
-   const { allStates = [], isLoading = false, mutate } = useGetAllState();
+   const { allStates = [], isLoading = false, mutate,error } = useGetAllState();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -180,7 +180,7 @@ export function DataTableDemo() {
     },
     {
       accessorKey: 'user',
-      header: () => <div>Usuario</div>,
+      header: () => <div>Agente</div>,
       cell: ({ row }) => {
         const usuario = row.getValue('user') as string 
         return <div>{usuario ?? '-'}</div>
@@ -214,7 +214,7 @@ export function DataTableDemo() {
      id: 'actions',
      enableHiding: false,
      header: () => <div className='text-right'>Acciones</div>,
-     cell: ({ row }) => <ActionsCell row={row} onDeleted={mutate} />
+     cell: ({ row }) => <ActionsCell row={row} onDeleted={() => mutate()} />
     },
   ],
   [mutate]
@@ -248,6 +248,12 @@ export function DataTableDemo() {
   
     if (isLoading)return <Loading />
 
+    if (error)
+  return (
+    <div className="text-red-600 p-4 bg-red-100 rounded">
+      Error al cargar los inmuebles: {error.message || 'Intenta nuevamente más tarde.'}
+    </div>
+  )
     return( 
             <div className="w-full">
               <CardHeader className="p-0">
@@ -258,10 +264,10 @@ export function DataTableDemo() {
               <div className="flex items-center py-4 justify-between">
                 <div className="relative max-w-sm">
                   <Input
-                    placeholder="Buscar inmueble..."
-                    value={(table.getColumn('descripcion')?.getFilterValue() as string) ?? ''}
+                    placeholder="Buscar inmueble por sector..."
+                    value={(table.getColumn('sector')?.getFilterValue() as string) ?? ''}
                     onChange={(event) =>
-                      table.getColumn('descripcion')?.setFilterValue(event.target.value)
+                     table.getColumn('sector')?.setFilterValue(event.target.value)
                     }
                     className="pl-10 pr-4"
                   />

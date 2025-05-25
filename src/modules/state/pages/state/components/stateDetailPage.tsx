@@ -8,13 +8,12 @@ import {
 } from "lucide-react"
 import { ImageGallery } from './state-imagen';
 import { useGetState } from '@/modules/state/hooks/useState';
-import L from 'leaflet';
 import { Mapa } from './state-maps';
 import { EstadoBadge } from './estadoBadge'
 
 
 
-const stateDetailPage = () => {
+const StateDetailPage = () => {
    const { id } = useParams()
   const { state: data, isLoading } = useGetState(id)
 
@@ -124,6 +123,9 @@ if (isLoading || !data) return <div className="p-6">Cargando...</div>
         <Mapa
           latitud={data.ubicacion.latitud}
           longitud={data.ubicacion.longitud}
+          direccion={data.ubicacion.direccion}
+          ciudad={data.ubicacion.ciudad}
+           pais={data.ubicacion.pais}
         />
       </div>
     </>
@@ -138,16 +140,10 @@ if (isLoading || !data) return <div className="p-6">Cargando...</div>
 const InfoRow = ({ icon, label, value }: { icon: React.ReactNode, label: string, value: React.ReactNode }) => (
   <div className="flex items-center gap-2">
     <div className="text-muted-foreground">{icon}</div>
-    <div><span className="font-medium">{label}:</span> {value}</div>
+    <div className="flex items-center gap-2">
+      <span className="font-medium">{label}:</span>
+      {value}
+    </div>
   </div>
 )
-
-// Arregla los íconos de Leaflet (por defecto no se ven en React)
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-});
-
-export default stateDetailPage
+export default StateDetailPage
