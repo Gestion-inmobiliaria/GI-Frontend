@@ -1,5 +1,5 @@
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon,Building2Icon, SettingsIcon, DatabaseIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -72,13 +72,13 @@ export const MenuSideBar: MenuHeaderRoute[] = [
   },
   {
     label: 'Gestionar Inmuebles',
-    icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+    icon: createElement(Building2Icon, { width: 20, height: 20 }),
     path: '/state',
     permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
     children: [
       {
         label: 'Gestionar Inmueble',
-        icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+        icon: createElement(Building2Icon, { width: 20, height: 20 }),
         path: '/state',
         permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
       },
@@ -116,5 +116,19 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
     path: '/bitacora',
     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
-  }
+  },
+  {
+   label: 'Configuraciones',
+    icon: createElement(SettingsIcon, { width: 20, height: 20 }),
+    path: 'settings',
+     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW/*PERMISSION.BACKUP_CREATE, PERMISSION.BACKUP_RESTORE*/],
+  children: [
+    {
+      label: 'Backup & Restore',
+      icon: createElement(DatabaseIcon, { width: 20, height: 20 }),
+      path: '/settings/backup',
+       permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW/*PERMISSION.BACKUP_CREATE, PERMISSION.BACKUP_RESTORE*/]
+    }
+  ]
+},
 ]

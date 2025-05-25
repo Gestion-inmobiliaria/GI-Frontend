@@ -3,29 +3,19 @@ interface EstadoBadgeProps {
 }
 
 export const EstadoBadge: React.FC<EstadoBadgeProps> = ({ estado }) => {
-  let colorClass = '';
-  switch (estado.toLowerCase()) {
-    case 'disponible':
-      colorClass = 'bg-white text-black border border-gray-300';
-      break;
-    case 'inactivo':
-      colorClass = 'bg-gray-500 text-white';
-      break;
-    case 'reservado':
-      colorClass = 'bg-red-500 text-white';
-      break;
-    case 'vendido':
-    case 'alquilado':
-    case 'anticretado':
-     colorClass = 'bg-green-500 text-white';
-     break;
-    default:
-      colorClass = 'bg-muted text-muted-foreground';
-      break;
-  }
+  const estadoColors: Record<string, string> = {
+    disponible: 'bg-green-100 text-green-800 border border-green-300',
+    inactivo: 'bg-gray-500 text-white',
+    reservado: 'bg-red-500 text-white',
+    vendido: 'bg-green-500 text-white',
+    alquilado: 'bg-green-500 text-white',
+    anticretado: 'bg-green-500 text-white',
+  };
+
+  const colorClass = estadoColors[estado.toLowerCase()] ?? 'bg-muted text-muted-foreground';
 
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${colorClass}`}>
+    <span className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${colorClass}`}>
       {estado}
     </span>
   );

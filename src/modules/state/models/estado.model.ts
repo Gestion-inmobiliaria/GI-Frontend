@@ -4,5 +4,4 @@ export enum ESTADO {
   VENDIDO = 'vendido',
   ALQUILADO = 'alquilado',
   ANTICRETADO= 'anticretado',
-  INACTIVO = 'inactivo',
 }
