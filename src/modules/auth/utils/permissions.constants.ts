@@ -81,9 +81,4 @@ export const modulePermissions = {
     PERMISSION.LOG,
     PERMISSION.LOG_SHOW
   ],
-  backup: [
-    PERMISSION.BACKUP_CREATE,
-    PERMISSION.BACKUP_RESTORE
-
-  ]
 }
