@@ -1,46 +1,62 @@
 import { BackupFile } from '../models/backup.model';
 
-interface ResponseMessage {
+export interface ResponseMessage<T = any> {
   statusCode: number;
-  data: any;
+  data: T;
 }
 
-const fetchData = async (url: string, options?: RequestInit): Promise<ResponseMessage> => {
+/**
+ * Función genérica para hacer peticiones fetch con tipado y manejo de errores.
+ */
+const fetchData = async <T = any>(
+  url: string,
+  options: RequestInit = {}
+): Promise<ResponseMessage<T>> => {
+  const token = localStorage.getItem('token') // o donde estés guardando tu JWT
+
   const response = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : '',
+      ...(options.headers || {}),
+    },
   });
 
   if (!response.ok) {
-    throw new Error('Error en la petición');
+    throw new Error('Error al obtener los datos');
   }
 
-  return response.json();
+  const data = await response.json();
+  return data;
 };
 
-const createManualBackup = async (url: string): Promise<ResponseMessage> => {
-  const options: RequestInit = {
-    method: 'POST',
-  };
-  return await fetchData(url, options);
+
+/**
+ * Ejecuta un respaldo manual.
+ */
+const createManualBackup = async (url: string): Promise<ResponseMessage<void>> => {
+  return await fetchData<void>(url, { method: 'POST' });
 };
 
+/**
+ * Restaura un respaldo dado un archivo.
+ */
 const restoreBackup = async (
   url: string,
   { arg }: { arg: BackupFile }
-): Promise<ResponseMessage> => {
-  const options: RequestInit = {
+): Promise<ResponseMessage<void>> => {
+  return await fetchData<void>(`${url}/restore`, {
     method: 'POST',
     body: JSON.stringify(arg),
-  };
-  return await fetchData(`${url}/restore`, options);
+  });
 };
 
-const getAllBackups = async (url: string): Promise<ResponseMessage> => {
-  const options: RequestInit = {
-    method: 'GET',
-  };
-  return await fetchData(url, options);
+/**
+ * Obtiene todos los respaldos disponibles.
+ */
+const getAllBackups = async (url: string): Promise<ResponseMessage<BackupFile[]>> => {
+  return await fetchData<BackupFile[]>(url, { method: 'GET' });
 };
 
 export { createManualBackup, restoreBackup, getAllBackups };
