@@ -1,13 +1,15 @@
-import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, MapIcon } from 'lucide-react'
 import { createElement } from 'react'
+import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, MapIcon, FileTextIcon } from 'lucide-react'
+
+
 
 export interface MenuHeaderRoute {
-  path?: string
-  label: string
-  icon?: JSX.Element
-  children?: MenuHeaderRoute[]
-  permissions?: PERMISSION[]
+    path?: string
+    label: string
+    icon?: JSX.Element
+    children?: MenuHeaderRoute[]
+    permissions?: PERMISSION[]
 }
 
 export const MenuSideBar: MenuHeaderRoute[] = [
@@ -106,6 +108,20 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     ]
   },
   {
+    label: 'Contratos',
+    icon: createElement(FileTextIcon, { width: 20, height: 20 }),
+    path: '/contratos',
+    permissions: [PERMISSION.MAP_VIEW, PERMISSION.MAP_VIEW], // TODO: Cambiar a CONTRACT
+    children: [
+      {
+        label: 'Generar Contrato',
+        icon: createElement(FileTextIcon, { width: 20, height: 20 }),
+        path: '/contratos',
+        permissions: [PERMISSION.MAP_VIEW, PERMISSION.MAP_VIEW] // TODO: Cambiar a CONTRACT
+      }
+    ]
+  },
+  {
     label: 'Mapa',
     icon: createElement(MapIcon, { width: 20, height: 20 }),
     path: '/mapa',
@@ -122,6 +138,5 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
     path: '/bitacora',
     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
-  },
-
+  }
 ]
