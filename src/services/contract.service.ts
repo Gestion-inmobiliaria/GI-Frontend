@@ -126,8 +126,8 @@ export class ContractService {
       contractContent,
       contractFormat: format,
       notes: formData.notes,
-      propertyId: parseInt(formData.propertyId),
-      paymentMethodId: parseInt(formData.paymentMethodId)
+      propertyId: formData.propertyId,
+      paymentMethodId: formData.paymentMethodId
     }
   }
 }

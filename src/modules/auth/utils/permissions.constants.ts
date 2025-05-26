@@ -54,11 +54,11 @@ export enum PERMISSION {
     MAP_VIEW = 'Ver mapa',
 
     // Contratos
-    CONTRACT = 'contract',
-    CONTRACT_SHOW = 'contract:show',
-    CONTRACT_CREATE = 'contract:create',
-    CONTRACT_UPDATE = 'contract:update',
-    CONTRACT_DELETE = 'contract:delete'
+    CONTRACT = 'Contrato',
+    CONTRACT_SHOW = 'Mostrar contratos',
+    CONTRACT_CREATE = 'Crear contratos',
+    CONTRACT_UPDATE = 'Actualizar contratos',
+    CONTRACT_DELETE = 'Eliminar contratos'
 }
 
 export const modulePermissions = {
@@ -90,5 +90,12 @@ export const modulePermissions = {
   ],
   mapa: [
       PERMISSION.MAP_VIEW
+  ],
+  contratos: [
+      PERMISSION.CONTRACT,
+      PERMISSION.CONTRACT_SHOW,
+      PERMISSION.CONTRACT_CREATE,
+      PERMISSION.CONTRACT_UPDATE,
+      PERMISSION.CONTRACT_DELETE
   ]
 }

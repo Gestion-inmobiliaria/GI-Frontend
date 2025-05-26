@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ContractService } from '@/services/contract.service'
+import { API_URL } from '@/config/constants'
 import { 
     ContractFormData, 
     ContractType, 
@@ -7,7 +8,22 @@ import {
     Property 
 } from '@/models/contract.model'
 
+const PAYMENT_METHODS = {
+  EFECTIVO: '27677348-8a2d-44a7-9902-41e8f1fbc9b6',
+  TARJETA: '53cffd4c-36db-4e73-852d-45e6f1d746be',
+  QR: '89c098f0-8cf4-4c87-8128-ecd6aaf98c77',
+  CRYPTO: 'd45f9723-b4de-4c56-8fa8-1a6184c5a0db'
+}
 
+interface PropertyResponse {
+  id: string;
+  descripcion: string;
+  precio: string;
+  ubicacion: {
+    direccion: string;
+    ciudad: string;
+  };
+}
 
 const ContractGenerator: React.FC = () => {
   const [formData, setFormData] = useState<ContractFormData>({
@@ -23,7 +39,7 @@ const ContractGenerator: React.FC = () => {
     startDate: '',
     endDate: '',
     propertyId: '',
-    paymentMethodId: '1',
+    paymentMethodId: PAYMENT_METHODS.EFECTIVO,
     notes: ''
   })
 
@@ -31,15 +47,40 @@ const ContractGenerator: React.FC = () => {
   const [message, setMessage] = useState('')
   // const [previewMode, setPreviewMode] = useState(false)
   const [contractFormat, setContractFormat] = useState<ContractFormat>(ContractFormat.HTML)
+  const [properties, setProperties] = useState<PropertyResponse[]>([])
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
 
-  // Datos de ejemplo - en producción vendrían del backend
-  const mockProperty: Property = {
-    id: '1',
-    address: 'Av. Arce #2345, Edificio Torre Sol, Piso 10',
-    price: 150000,
-    city: 'La Paz',
-    zone: 'Zona Sur'
-  }
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/property`)
+        const data = await response.json()
+        if (data.statusCode === 200) {
+          setProperties(data.data)
+        }
+      } catch (error) {
+        console.error('Error al cargar propiedades:', error)
+        setMessage('Error al cargar las propiedades')
+      }
+    }
+
+    fetchProperties()
+  }, [])
+
+  useEffect(() => {
+    if (formData.propertyId) {
+      const property = properties.find(p => p.id === formData.propertyId)
+      if (property) {
+        setSelectedProperty({
+          id: property.id,
+          address: property.ubicacion.direccion,
+          price: parseFloat(property.precio),
+          description: property.descripcion,
+          city: property.ubicacion.ciudad
+        })
+      }
+    }
+  }, [formData.propertyId, properties])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -51,7 +92,12 @@ const ContractGenerator: React.FC = () => {
 
   const handlePreview = async () => {
     try {
-      const htmlContent = ContractService.generateHTMLContent(formData, mockProperty)
+      if (!selectedProperty) {
+        setMessage('Por favor seleccione una propiedad')
+        return
+      }
+
+      const htmlContent = ContractService.generateHTMLContent(formData, selectedProperty)
       let contractContent: string
       
       if (contractFormat === ContractFormat.PDF) {
@@ -72,14 +118,19 @@ const ContractGenerator: React.FC = () => {
     setMessage('')
     
     try {
+      if (!selectedProperty) {
+        setMessage('Por favor seleccione una propiedad')
+        return
+      }
+
       console.log('Datos del formulario:', formData)
-      console.log('Datos de la propiedad:', mockProperty)
+      console.log('Datos de la propiedad:', selectedProperty)
       console.log('Formato seleccionado:', contractFormat)
 
       // Generar payload
       const payload = await ContractService.prepareCreatePayload(
         formData, 
-        mockProperty, 
+        selectedProperty, 
         contractFormat
       )
       
@@ -109,7 +160,7 @@ const ContractGenerator: React.FC = () => {
         startDate: '',
         endDate: '',
         propertyId: '',
-        paymentMethodId: '1',
+        paymentMethodId: PAYMENT_METHODS.EFECTIVO,
         notes: ''
       })
       
@@ -272,16 +323,21 @@ const ContractGenerator: React.FC = () => {
           <h3 className="text-lg font-semibold mb-3">Detalles del Contrato</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">ID de Propiedad</label>
-              <input
-                type="number"
+              <label className="block text-sm font-medium mb-1">Propiedad</label>
+              <select
                 name="propertyId"
                 value={formData.propertyId}
                 onChange={handleChange}
                 className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-                placeholder="1"
                 required
-              />
+              >
+                <option value="">Seleccione una propiedad</option>
+                {properties.map(property => (
+                  <option key={property.id} value={property.id}>
+                    {property.ubicacion.direccion} - ${property.precio}
+                  </option>
+                ))}
+              </select>
             </div>
             
             <div>
@@ -330,9 +386,10 @@ const ContractGenerator: React.FC = () => {
                 onChange={handleChange}
                 className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
               >
-                <option value="1">Transferencia Bancaria</option>
-                <option value="2">Efectivo</option>
-                <option value="3">Cheque</option>
+                <option value={PAYMENT_METHODS.EFECTIVO}>Efectivo</option>
+                <option value={PAYMENT_METHODS.TARJETA}>Tarjeta de crédito</option>
+                <option value={PAYMENT_METHODS.QR}>Código QR</option>
+                <option value={PAYMENT_METHODS.CRYPTO}>Crypto</option>
               </select>
             </div>
           </div>

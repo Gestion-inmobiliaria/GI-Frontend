@@ -61,8 +61,8 @@ export interface CreateContractPayload {
     contractContent: string;
     contractFormat: ContractFormat;
     notes?: string;
-    propertyId: number;
-    paymentMethodId: number;
+    propertyId: string;
+    paymentMethodId: string;
 }
 
 export interface Contract {
