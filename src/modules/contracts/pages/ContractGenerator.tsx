@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { ContractService } from '@/services/contract.service'
 import { 
-  ContractFormData, 
-  ContractType, 
-  ContractFormat,
-  Property 
+    ContractFormData, 
+    ContractType, 
+    ContractFormat,
+    Property 
 } from '@/models/contract.model'
 
 
@@ -72,6 +72,10 @@ const ContractGenerator: React.FC = () => {
     setMessage('')
     
     try {
+      console.log('Datos del formulario:', formData)
+      console.log('Datos de la propiedad:', mockProperty)
+      console.log('Formato seleccionado:', contractFormat)
+
       // Generar payload
       const payload = await ContractService.prepareCreatePayload(
         formData, 

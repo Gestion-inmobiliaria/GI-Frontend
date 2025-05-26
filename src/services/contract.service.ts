@@ -10,6 +10,9 @@ export class ContractService {
   private static readonly BASE_URL = `${API_URL}/api/contracts`
 
   static async saveContract(payload: CreateContractPayload): Promise<Contract> {
+    console.log('Endpoint:', this.BASE_URL)
+    console.log('Payload:', JSON.stringify(payload, null, 2))
+
     const response = await fetch(this.BASE_URL, {
       method: 'POST',
       headers: {

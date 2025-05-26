@@ -11,9 +11,9 @@ const NotFound = lazy(() => import('@/components/not-found'))
 const DashboardPage = lazy(() => import('@modules/dashboard'))
 const SettingPage = lazy(() => import('@modules/settings/pages/setting'))
 const SubscriptionPage = lazy(() => import('@modules/subscription/pages'))
+const ContractsPage = lazy(() => import('@/modules/contracts/pages/ContractsPage'))
 const PlanSubscriptionPage = lazy(() => import('@modules/subscription/pages/plan-subscription'))
 const PlanSubscriptionSuccessPage = lazy(() => import('@modules/subscription/pages/plan-subscription/success'))
-const ContractsPage = lazy(() => import('@/modules/contracts/pages/ContractsPage'))
 
 export const PrivateAllRoutes: Route[] = [
     {

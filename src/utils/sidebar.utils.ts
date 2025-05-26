@@ -111,13 +111,13 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     label: 'Contratos',
     icon: createElement(FileTextIcon, { width: 20, height: 20 }),
     path: '/contratos',
-    permissions: [PERMISSION.MAP_VIEW, PERMISSION.MAP_VIEW], // TODO: Cambiar a CONTRACT
+    permissions: [PERMISSION.USER, PERMISSION.USER], // TODO: Cambiar a CONTRACT
     children: [
       {
         label: 'Generar Contrato',
         icon: createElement(FileTextIcon, { width: 20, height: 20 }),
         path: '/contratos',
-        permissions: [PERMISSION.MAP_VIEW, PERMISSION.MAP_VIEW] // TODO: Cambiar a CONTRACT
+        permissions: [PERMISSION.USER, PERMISSION.USER] // TODO: Cambiar a CONTRACT
       }
     ]
   },

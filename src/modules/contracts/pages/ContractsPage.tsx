@@ -10,4 +10,4 @@ const ContractsPage: React.FC = () => {
   )
 }
 
-export default ContractsPage 
+export default ContractsPage
