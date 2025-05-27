@@ -11,50 +11,72 @@ const ContractList: React.FC = () => {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    let isMounted = true
+    const controller = new AbortController()
 
     const fetchContracts = async () => {
       try {
+        console.log('🚀 Iniciando petición a:', `${API_URL}/api/contracts`)
+        
         const response = await fetch(`${API_URL}/api/contracts`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
             'Cache-Control': 'no-cache'
-          }
+          },
+          //signal: controller.signal
         })
 
-        if (!isMounted) return
+        console.log('📡 Respuesta recibida - Status:', response.status)
 
         if (response.status === 204) {
+          console.log('📝 Status 204 - No hay contenido')
           setContracts([])
+          setLoading(false)
           return
         }
 
         if (response.ok) {
           const data = await response.json()
-          if (data?.data) {
+          
+          console.log('📊 Datos recibidos:', data)
+          console.log('📊 Tipo de datos:', typeof data, 'Es array:', Array.isArray(data))
+          
+          // Corregir la lógica según la estructura real de la respuesta
+          if (Array.isArray(data)) {
+            console.log('✅ Configurando contratos - Array directo:', data.length, 'elementos')
+            setContracts(data)
+          } else if (data?.data && Array.isArray(data.data)) {
+            console.log('✅ Configurando contratos - data.data:', data.data.length, 'elementos')
             setContracts(data.data)
+          } else if (data?.contracts && Array.isArray(data.contracts)) {
+            console.log('✅ Configurando contratos - data.contracts:', data.contracts.length, 'elementos')
+            setContracts(data.contracts)
           } else {
+            console.warn('⚠️ Estructura de respuesta no reconocida:', data)
             setContracts([])
           }
         } else {
-          setError('Error al cargar los contratos')
+          const errorText = await response.text()
+          console.error('❌ Error response:', response.status, errorText)
+          setError(`Error al cargar los contratos: ${response.status}`)
         }
-      } catch (error) {
-        if (!isMounted) return
-        console.error('Error:', error)
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.log('🛑 Petición cancelada')
+          return
+        }
+        console.error('❌ Error en fetch:', error)
         setError('Error al cargar los contratos')
       } finally {
-        if (isMounted) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     }
 
     fetchContracts()
 
+    // Cleanup function
     return () => {
-      isMounted = false
+      controller.abort()
     }
   }, [])
 
