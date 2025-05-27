@@ -6,7 +6,10 @@ import BasicMap from '@/components/maps/BasicMap'
 import { Property } from '@/models/property.model'
 import { RootState } from '@/redux/store'
 import { getModalities, getProperties, getSectors } from '@/services/property.service'
-
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 export default function MapaPage() {
   useHeader([
@@ -25,7 +28,6 @@ export default function MapaPage() {
   const [modalidad, setModalidad] = useState('')
   const [, setFiltrosActivos] = useState(false)
 
-  // Estados para listas de sectores y modalidades
   const [sectores, setSectores] = useState<{ id: string, name: string }[]>([])
   const [modalidades, setModalidades] = useState<{ id: string, name: string }[]>([])
 
@@ -37,26 +39,14 @@ export default function MapaPage() {
   const fetchFiltros = async () => {
     try {
       const [resSectors, resModalities] = await Promise.all([getSectors(), getModalities()])
-
-      if (resSectors.statusCode === 200) {
-        setSectores(resSectors.data ?? [])
-      } else {
-        setSectores([])
-      }
-
-      if (resModalities.statusCode === 200) {
-        setModalidades(resModalities.data ?? [])
-      } else {
-        setModalidades([])
-      }
-
+      setSectores(resSectors.statusCode === 200 ? resSectors.data ?? [] : [])
+      setModalidades(resModalities.statusCode === 200 ? resModalities.data ?? [] : [])
     } catch (error) {
-      console.error('Error general al cargar filtros:', error)
+      console.error('Error al cargar filtros:', error)
       setSectores([])
       setModalidades([])
     }
   }
-
 
   const fetchProperties = async (aplicarFiltros = false) => {
     setLoading(true)
@@ -64,11 +54,10 @@ export default function MapaPage() {
 
     if (res.statusCode === 200 && res.data) {
       let filtered: Property[] = []
-
       if (user?.role?.name === 'Administrador TI') {
         filtered = res.data
       } else if (user?.sector?.id) {
-        filtered = res.data.filter((p) => p.sector?.id === user.sector?.id)
+        filtered = res.data.filter(p => p.sector?.id === user.sector?.id)
       }
 
       if (aplicarFiltros) {
@@ -102,53 +91,64 @@ export default function MapaPage() {
 
   return (
     <section className="flex flex-col h-[calc(100vh-64px)] p-4 gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Mapa de Propiedades</h1>
-      </div>
-
-      {/* Menú de filtros */}
-      <div className="p-4 bg-gray-100 rounded-md space-y-2">
-        <h2 className="font-bold text-lg">Filtros Avanzados</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-          <div>
-            <label>Precio máximo: ${precioMax}</label>
-            <input type="range" min="10000" max="1000000" step="10000" value={precioMax} onChange={(e) => setPrecioMax(Number(e.target.value))} />
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Filtros Avanzados</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Precio máximo: ${precioMax}</label>
+            <Input
+              type="range"
+              min="10000"
+              max="1000000"
+              step="10000"
+              value={precioMax}
+              onChange={(e) => setPrecioMax(Number(e.target.value))}
+            />
           </div>
-          <div>
-            <label>Habitaciones mínimas:</label>
-            <input type="number" value={habitacionesMin} min="1" onChange={(e) => setHabitacionesMin(Number(e.target.value))} />
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Habitaciones mínimas</label>
+            <Input
+              type="number"
+              min="1"
+              value={habitacionesMin}
+              onChange={(e) => setHabitacionesMin(Number(e.target.value))}
+            />
           </div>
-          <div>
-            <label>Sector:</label>
-            <select value={sector} onChange={(e) => setSector(e.target.value)}>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Sector</label>
+            <select
+              value={sector}
+              onChange={(e) => setSector(e.target.value)}
+              className="w-full h-10 border rounded px-3"
+            >
               <option value="">Todos</option>
-              {sectores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              {sectores.map((s) => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
             </select>
           </div>
-          <div>
-            <label>Modalidad:</label>
-            <select value={modalidad} onChange={(e) => setModalidad(e.target.value)}>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Modalidad</label>
+            <select
+              value={modalidad}
+              onChange={(e) => setModalidad(e.target.value)}
+              className="w-full h-10 border rounded px-3"
+            >
               <option value="">Todas</option>
-              {modalidades.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+              {modalidades.map((m) => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))}
             </select>
           </div>
-        </div>
+        </CardContent>
 
-        <div className="flex gap-2 mt-2">
-          <button
-            onClick={aplicarFiltros}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-          >
-            Aplicar filtros
-          </button>
-          <button
-            onClick={limpiarFiltros}
-            className="bg-gray-300 hover:bg-gray-400 text-black font-semibold px-4 py-2 rounded"
-          >
-            Limpiar filtros
-          </button>
-        </div>
-      </div>
+        <CardFooter className="flex gap-2">
+          <Button onClick={aplicarFiltros}>Aplicar</Button>
+          <Button variant="outline" onClick={limpiarFiltros}>Limpiar</Button>
+        </CardFooter>
+      </Card>
 
       {loading ? (
         <div className="flex justify-center items-center h-full">
