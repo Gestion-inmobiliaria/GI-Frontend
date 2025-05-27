@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import { ContractService } from '@/services/contract.service'
 import { API_URL } from '@/config/constants'
+import React, { useState, useEffect } from 'react'
 import { 
-    ContractFormData, 
-    ContractType, 
-    ContractFormat,
-    Property 
+  ContractFormData, 
+  ContractType, 
+  ContractFormat,
+  Property 
 } from '@/models/contract.model'
+import { ContractService } from '@/services/contract.service'
+
+
 
 const PAYMENT_METHODS = {
-  EFECTIVO: '27677348-8a2d-44a7-9902-41e8f1fbc9b6',
-  TARJETA: '53cffd4c-36db-4e73-852d-45e6f1d746be',
-  QR: '89c098f0-8cf4-4c87-8128-ecd6aaf98c77',
-  CRYPTO: 'd45f9723-b4de-4c56-8fa8-1a6184c5a0db'
+    EFECTIVO: '27677348-8a2d-44a7-9902-41e8f1fbc9b6',
+    TARJETA: '53cffd4c-36db-4e73-852d-45e6f1d746be',
+    QR: '89c098f0-8cf4-4c87-8128-ecd6aaf98c77',
+    CRYPTO: 'd45f9723-b4de-4c56-8fa8-1a6184c5a0db'
 }
 
 interface PropertyResponse {
-  id: string;
-  descripcion: string;
-  precio: string;
-  ubicacion: {
-    direccion: string;
-    ciudad: string;
-  };
+    id: string;
+    descripcion: string;
+    precio: string;
+    ubicacion: {
+      direccion: string;
+      ciudad: string;
+    };
 }
 
 const ContractGenerator: React.FC = () => {
