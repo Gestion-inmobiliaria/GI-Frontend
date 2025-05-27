@@ -176,11 +176,11 @@ const ContractGenerator: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Generar Nuevo Contrato</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Generar Nuevo Contrato</h2>
       
       {message && (
         <div className={`mb-4 p-3 rounded ${
-          message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+          message.includes('Error') ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200' : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
         }`}>
           {message}
         </div>
@@ -188,29 +188,29 @@ const ContractGenerator: React.FC = () => {
       
       <div className="space-y-6">
         {/* Información del Contrato */}
-        <div className="border-b pb-4">
-          <h3 className="text-lg font-semibold mb-3">Información del Contrato</h3>
+        <div className="border-b pb-4 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Información del Contrato</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Número de Contrato</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Número de Contrato</label>
               <input
                 type="number"
                 name="contractNumber"
                 value={formData.contractNumber}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="12345"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1">Tipo de Contrato</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Tipo de Contrato</label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value={ContractType.VENTA}>Venta</option>
                 <option value={ContractType.COMPRA}>Compra</option>
@@ -219,11 +219,11 @@ const ContractGenerator: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Formato de Salida</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Formato de Salida</label>
               <select
                 value={contractFormat}
                 onChange={(e) => setContractFormat(e.target.value as ContractFormat)}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value={ContractFormat.HTML}>HTML</option>
                 <option value={ContractFormat.PDF}>PDF</option>
@@ -233,55 +233,55 @@ const ContractGenerator: React.FC = () => {
         </div>
 
         {/* Datos del Cliente */}
-        <div className="border-b pb-4">
-          <h3 className="text-lg font-semibold mb-3">Datos del Cliente</h3>
+        <div className="border-b pb-4 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Datos del Cliente</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Nombre Completo</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Nombre Completo</label>
               <input
                 type="text"
                 name="clientName"
                 value={formData.clientName}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="Juan Pérez García"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1">CI/NIT</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">CI/NIT</label>
               <input
                 type="text"
                 name="clientDocument"
                 value={formData.clientDocument}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="12345678"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Teléfono (Opcional)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Teléfono (Opcional)</label>
               <input
                 type="tel"
                 name="clientPhone"
                 value={formData.clientPhone}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="+591 70000000"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Email (Opcional)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Email (Opcional)</label>
               <input
                 type="email"
                 name="clientEmail"
                 value={formData.clientEmail}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="cliente@email.com"
               />
             </div>
@@ -289,30 +289,30 @@ const ContractGenerator: React.FC = () => {
         </div>
 
         {/* Datos del Agente */}
-        <div className="border-b pb-4">
-          <h3 className="text-lg font-semibold mb-3">Datos del Agente</h3>
+        <div className="border-b pb-4 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Datos del Agente</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Nombre del Agente</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Nombre del Agente</label>
               <input
                 type="text"
                 name="agentName"
                 value={formData.agentName}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="María García López"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1">CI del Agente</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">CI del Agente</label>
               <input
                 type="text"
                 name="agentDocument"
                 value={formData.agentDocument}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="87654321"
                 required
               />
@@ -321,16 +321,16 @@ const ContractGenerator: React.FC = () => {
         </div>
 
         {/* Detalles del Contrato */}
-        <div className="border-b pb-4">
-          <h3 className="text-lg font-semibold mb-3">Detalles del Contrato</h3>
+        <div className="border-b pb-4 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Detalles del Contrato</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Propiedad</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Propiedad</label>
               <select
                 name="propertyId"
                 value={formData.propertyId}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               >
                 <option value="">Seleccione una propiedad</option>
@@ -343,13 +343,13 @@ const ContractGenerator: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1">Monto (USD)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Monto (USD)</label>
               <input
                 type="number"
                 name="amount"
                 value={formData.amount}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="150000"
                 step="0.01"
                 required
@@ -357,36 +357,36 @@ const ContractGenerator: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Fecha de Inicio</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Fecha de Inicio</label>
               <input
                 type="date"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-1">Fecha de Término</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Fecha de Término</label>
               <input
                 type="date"
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Método de Pago</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Método de Pago</label>
               <select
                 name="paymentMethodId"
                 value={formData.paymentMethodId}
                 onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value={PAYMENT_METHODS.EFECTIVO}>Efectivo</option>
                 <option value={PAYMENT_METHODS.TARJETA}>Tarjeta de crédito</option>
@@ -399,12 +399,12 @@ const ContractGenerator: React.FC = () => {
 
         {/* Observaciones */}
         <div>
-          <label className="block text-sm font-medium mb-1">Observaciones (Opcional)</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">Observaciones (Opcional)</label>
           <textarea
             name="notes"
             value={formData.notes}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             rows={3}
             placeholder="Notas adicionales sobre el contrato..."
           />
@@ -414,7 +414,7 @@ const ContractGenerator: React.FC = () => {
         <div className="flex gap-3">
           <button
             onClick={handlePreview}
-            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition-colors"
+            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             Vista Previa
           </button>
@@ -422,7 +422,7 @@ const ContractGenerator: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors disabled:opacity-50 dark:bg-blue-700 dark:hover:bg-blue-600"
           >
             {loading ? 'Generando...' : 'Generar y Guardar Contrato'}
           </button>
