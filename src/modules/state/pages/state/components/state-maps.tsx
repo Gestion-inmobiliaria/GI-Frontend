@@ -15,7 +15,7 @@ interface MapaProps {
 export function Mapa({ latitud, longitud, direccion, ciudad, pais }: MapaProps) {
   return (
     <MapContainer
-       center={[latitud, longitud]}
+      center={[latitud, longitud]}
       zoom={13}
       scrollWheelZoom={true}
       style={{ height: '400px', width: '100%' }}
@@ -60,6 +60,8 @@ const LocationMarker = ({
     },
   });
 
+
+
   useEffect(() => {
     if (initialPosition) {
       setPosition(initialPosition);
@@ -79,6 +81,8 @@ const FlyToLocation = ({ coords }: { coords: [number, number] }) => {
   return null;
 };
 
+
+
 export const CoordinatePicker = ({
   initialPosition,
   onCoordinateChange,
@@ -87,6 +91,7 @@ export const CoordinatePicker = ({
   const [mapReady, setMapReady] = useState(false);
   const [currentCoords, setCurrentCoords] = useState<[number, number] | null>(null);
 
+
   useEffect(() => {
     setMapReady(true);
     if (initialPosition) {
@@ -94,9 +99,16 @@ export const CoordinatePicker = ({
     }
   }, [initialPosition]);
 
-  const handleCoordinateChange = (lat: number, lng: number) => {
-    setCurrentCoords([lat, lng]);
-    onCoordinateChange(lat, lng);
+  const handleCoordinateChange = (lat: number | string, lng: number | string) => {
+    const parsedLat = typeof lat === "string" ? parseFloat(lat) : lat;
+    const parsedLng = typeof lng === "string" ? parseFloat(lng) : lng;
+
+    if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
+      setCurrentCoords([parsedLat, parsedLng]);
+      onCoordinateChange(parsedLat, parsedLng);
+    } else {
+      console.error("Coordenadas no válidas:", lat, lng);
+    }
   };
 
   useEffect(() => {
@@ -157,7 +169,7 @@ export const CoordinatePicker = ({
           <input
             type="number"
             readOnly
-            value={currentCoords?.[0]?.toFixed(6) || ""}
+            value={typeof currentCoords?.[0] === 'number' ? currentCoords[0].toFixed(6) : ''}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
@@ -168,11 +180,12 @@ export const CoordinatePicker = ({
           <input
             type="number"
             readOnly
-            value={currentCoords?.[1]?.toFixed(6) || ""}
+            value={typeof currentCoords?.[1] === 'number' ? currentCoords[1].toFixed(6) : ''}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
       </div>
+
 
       <p className="text-sm text-gray-500">
         Haz clic en el mapa para seleccionar la ubicación
