@@ -209,16 +209,17 @@ useEffect(() => {
 
   // Sincronizar valores cuando 'state' esté listo
   useEffect(() => {
-    if (state) {
+    // Solo resetea si hay id (modo edición) y hay datos de state
+    if (id && state) {
       form.reset({
         descripcion: state.descripcion ?? '',
-        precio: state.precio ?? 0,
+        precio: Number(state.precio) ?? 0,
         estado: state.estado as ESTADO ?? ESTADO.DISPONIBLE,
-        area: state.area ?? 0,
-        NroHabitaciones: state.NroHabitaciones ?? 0,
-        NroBanos: state.NroBanos ?? 0,
-        NroEstacionamientos: state.NroEstacionamientos ?? 0,
-        comision: state.comision ?? 0,
+        area: Number(state.area) ?? 0,
+        NroHabitaciones: Number(state.NroHabitaciones) ?? 0,
+        NroBanos: Number(state.NroBanos) ?? 0,
+        NroEstacionamientos: Number(state.NroEstacionamientos) ?? 0,
+        comision: Number(state.comision) ?? 0,
         condicion_Compra: state.condicion_Compra ?? '',
         user: state.user?.id ?? '',
         category: state.category?.id ?? '',
@@ -228,12 +229,12 @@ useEffect(() => {
           direccion: state.ubicacion?.direccion ?? '',
           pais: state.ubicacion?.pais ?? '',
           ciudad: state.ubicacion?.ciudad ?? '',
-          latitud: state.ubicacion?.latitud ?? 0,
-          longitud: state.ubicacion?.longitud ?? 0,
+          latitud: Number(state.ubicacion?.latitud) ?? 0,
+          longitud: Number(state.ubicacion?.longitud) ?? 0,
         },
       });
     }
-  }, [state]);
+  }, [id, state]);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const request =id
@@ -259,6 +260,24 @@ useEffect(() => {
   })
 }
 const [searchLocation, setSearchLocation] = useState<{ pais: string; ciudad: string }>();
+
+// Helper para obtener coordenadas válidas
+const getInitialPosition = () => {
+  const lat = form.getValues("ubicacion.latitud");
+  const lng = form.getValues("ubicacion.longitud");
+  if (
+    typeof lat === "number" &&
+    typeof lng === "number" &&
+    !isNaN(lat) &&
+    !isNaN(lng) &&
+    lat !== 0 &&
+    lng !== 0
+  ) {
+    return [lat, lng] as [number, number];
+  }
+  return undefined;
+};
+
 return (
   <section className="flex-1 grid gap-6">
   <Form {...form}>
@@ -671,15 +690,7 @@ return (
     <div className="space-y-2">
       <FormLabel>Selecciona la ubicación en el mapa</FormLabel>
       <CoordinatePicker
-  initialPosition={
-    form.getValues("ubicacion.latitud") &&
-    form.getValues("ubicacion.longitud")
-      ? [
-          form.getValues("ubicacion.latitud"),
-          form.getValues("ubicacion.longitud"),
-        ]
-      : undefined
-  }
+  initialPosition={getInitialPosition()}
   onCoordinateChange={(lat, lng) => {
     form.setValue("ubicacion.latitud", lat);
     form.setValue("ubicacion.longitud", lng);

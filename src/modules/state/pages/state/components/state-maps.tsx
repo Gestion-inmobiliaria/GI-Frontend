@@ -44,14 +44,14 @@ interface CoordinatePickerProps {
 }
 
 const LocationMarker = ({
-  initialPosition,
+  position,
+  setPosition,
   onCoordinateChange,
 }: {
-  initialPosition?: [number, number];
+  position: [number, number] | null;
+  setPosition: (pos: [number, number]) => void;
   onCoordinateChange: (lat: number, lng: number) => void;
 }) => {
-  const [position, setPosition] = useState<[number, number] | null>(initialPosition || null);
-
   useMapEvents({
     click(e) {
       const newPosition: [number, number] = [e.latlng.lat, e.latlng.lng];
@@ -60,63 +60,40 @@ const LocationMarker = ({
     },
   });
 
-
-
-  useEffect(() => {
-    if (initialPosition) {
-      setPosition(initialPosition);
-    }
-  }, [initialPosition]);
-
   return position ? <Marker position={position} /> : null;
 };
 
 const FlyToLocation = ({ coords }: { coords: [number, number] }) => {
   const map = useMap();
-
   useEffect(() => {
     map.flyTo(coords, 15);
   }, [coords, map]);
-
   return null;
 };
-
-
 
 export const CoordinatePicker = ({
   initialPosition,
   onCoordinateChange,
   searchLocation,
 }: CoordinatePickerProps) => {
-  const [mapReady, setMapReady] = useState(false);
-  const [currentCoords, setCurrentCoords] = useState<[number, number] | null>(null);
+  // Usar solo un estado para la posición
+  const [currentCoords, setCurrentCoords] = useState<[number, number] | null>(initialPosition || null);
+  const [shouldFly, setShouldFly] = useState(false);
 
-
+  // Actualiza la posición cuando cambia initialPosition (por ejemplo, al editar)
   useEffect(() => {
-    setMapReady(true);
     if (initialPosition) {
       setCurrentCoords(initialPosition);
+      setShouldFly(true);
     }
   }, [initialPosition]);
 
-  const handleCoordinateChange = (lat: number | string, lng: number | string) => {
-    const parsedLat = typeof lat === "string" ? parseFloat(lat) : lat;
-    const parsedLng = typeof lng === "string" ? parseFloat(lng) : lng;
-
-    if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
-      setCurrentCoords([parsedLat, parsedLng]);
-      onCoordinateChange(parsedLat, parsedLng);
-    } else {
-      console.error("Coordenadas no válidas:", lat, lng);
-    }
-  };
-
+  // Busca la ciudad y país cuando searchLocation cambia
   useEffect(() => {
     const buscarUbicacion = async () => {
       if (searchLocation?.pais && searchLocation?.ciudad) {
         const query = `${searchLocation.ciudad}, ${searchLocation.pais}`;
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
-
         try {
           const response = await fetch(url);
           const data = await response.json();
@@ -125,25 +102,38 @@ export const CoordinatePicker = ({
             const coords: [number, number] = [parseFloat(lat), parseFloat(lon)];
             setCurrentCoords(coords);
             onCoordinateChange(coords[0], coords[1]);
+            setShouldFly(true);
           }
         } catch (error) {
           console.error("Error buscando ubicación:", error);
         }
       }
     };
-
     buscarUbicacion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchLocation]);
 
-  if (!mapReady) {
-    return <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>;
-  }
+  // Valor por defecto para el centro del mapa
+  const center = currentCoords || [-17.7833, -63.1821];
+
+  // Cuando el usuario hace clic en el mapa, actualiza la posición y desactiva el fly
+  const handleSetPosition = (pos: [number, number]) => {
+    setCurrentCoords(pos);
+    onCoordinateChange(pos[0], pos[1]);
+    setShouldFly(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      console.log("CoordinatePicker desmontado");
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
       <div className="h-64 rounded-lg overflow-hidden border">
         <MapContainer
-          center={currentCoords || [-17.7833, -63.1821]}
+          center={center}
           zoom={currentCoords ? 15 : 13}
           style={{ height: "100%", width: "100%" }}
         >
@@ -151,13 +141,12 @@ export const CoordinatePicker = ({
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-
           <LocationMarker
-            initialPosition={currentCoords || initialPosition}
-            onCoordinateChange={handleCoordinateChange}
+            position={currentCoords}
+            setPosition={handleSetPosition}
+            onCoordinateChange={onCoordinateChange}
           />
-
-          {currentCoords && <FlyToLocation coords={currentCoords} />}
+          {shouldFly && currentCoords && <FlyToLocation coords={currentCoords} />}
         </MapContainer>
       </div>
 
@@ -185,7 +174,6 @@ export const CoordinatePicker = ({
           />
         </div>
       </div>
-
 
       <p className="text-sm text-gray-500">
         Haz clic en el mapa para seleccionar la ubicación
