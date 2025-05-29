@@ -1,5 +1,7 @@
 import { AppConfig } from '../config'
 
+
+
 export const ENDPOINTS = {
   // auth
   AUTH: '/api/auth',
@@ -18,10 +20,11 @@ export const ENDPOINTS = {
 
   // backup
   BACKUP: '/api/backup', 
+
 }
 
 export const API_BASEURL = AppConfig.API_URL
 
 export const buildUrl = ({ endpoint, id = undefined, query = undefined }: { endpoint: string, id?: string, query?: string }) => {
-  return `${API_BASEURL}${endpoint}${id ? `/${id}` : ''}${query ? `?${query}` : ''}`
+    return `${API_BASEURL}${endpoint}${id ? `/${id}` : ''}${query ? `?${query}` : ''}`
 }

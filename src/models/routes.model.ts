@@ -1,14 +1,17 @@
 import { type PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
+
+
 export enum PublicRoutes {
-  LOGIN = '/login',
-  RESET_PASSWORD = '/reset-password',
-  LANDING = '/',
-  REGISTER = '/register',
-  SUBSCRIPTION = '/subscripcion',
+    LOGIN = '/login',
+    RESET_PASSWORD = '/reset-password',
+    LANDING = '/',
+    REGISTER = '/register',
+    SUBSCRIPTION = '/subscripcion',
 }
 
 export enum PrivateRoutes {
+
   DASHBOARD = '/app',
   SETTINGS = '/configuracion',
   SUBSCRIPTION = '/subscripcion',
@@ -54,10 +57,16 @@ export enum PrivateRoutes {
 
   //map
   MAPA = '/mapa', 
+      // Contracts
+    CONTRACTS = '/contratos',
+    CONTRACTS_CREATE = '/contratos/crear',
+    CONTRACTS_EDIT = '/contratos/:id',
+    CONTRACTS_DETAIL = '/contratos/detalle/:id',
+
 }
 
 export interface Route {
-  path: PrivateRoutes | PublicRoutes | '/*'
-  element: JSX.Element | JSX.Element[]
-  permissions?: PERMISSION[]
+    path: PrivateRoutes | PublicRoutes | '/*'
+    element: JSX.Element | JSX.Element[]
+    permissions?: PERMISSION[]
 }
