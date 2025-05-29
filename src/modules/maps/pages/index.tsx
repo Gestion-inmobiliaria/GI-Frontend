@@ -9,7 +9,7 @@ import { getModalities, getProperties, getSectors } from '@/services/property.se
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+//import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 export default function MapaPage() {
   useHeader([
@@ -23,10 +23,17 @@ export default function MapaPage() {
 
   // Estado para filtros
   const [precioMax, setPrecioMax] = useState(1000000)
-  const [habitacionesMin, setHabitacionesMin] = useState(1)
+  const [habitacionesMin, setHabitacionesMin] = useState(0)
   const [sector, setSector] = useState('')
   const [modalidad, setModalidad] = useState('')
   const [, setFiltrosActivos] = useState(false)
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+  const [estado, setEstado] = useState('');  // Estado del inmueble
+  const [categoria, setCategoria] = useState('');  // Categoría
+  const [areaMin, setAreaMin] = useState(0);  // Área mínima
+  const [banosMin, setBanosMin] = useState(0);  // Baños mínimos
+  const [estacionamientosMin, setEstacionamientosMin] = useState(0);  // Estacionamientos mínimos
 
   const [sectores, setSectores] = useState<{ id: string, name: string }[]>([])
   const [modalidades, setModalidades] = useState<{ id: string, name: string }[]>([])
@@ -64,9 +71,14 @@ export default function MapaPage() {
         filtered = filtered.filter(p =>
           Number(p.precio) <= precioMax &&
           p.NroHabitaciones >= habitacionesMin &&
+          p.NroBanos >= banosMin &&
+          p.NroEstacionamientos >= estacionamientosMin &&
+          Number(p.area) >= areaMin &&
           (!sector || p.sector?.id === sector) &&
-          (!modalidad || p.modality?.id === modalidad)
-        )
+          (!modalidad || p.modality?.id === modalidad) &&
+          (!estado || p.estado.toLowerCase() === estado.toLowerCase()) &&
+          (!categoria || p.category?.name.toLowerCase() === categoria.toLowerCase())
+        );
       }
 
       setProperties(filtered)
@@ -82,12 +94,21 @@ export default function MapaPage() {
 
   const limpiarFiltros = () => {
     setPrecioMax(1000000)
-    setHabitacionesMin(1)
+    setHabitacionesMin(0)
     setSector('')
     setModalidad('')
     setFiltrosActivos(false)
+
+    // Nuevos filtros:
+    setAreaMin(0)
+    setBanosMin(0)
+    setEstacionamientosMin(0)
+    setEstado('')
+    setCategoria('')
+
     fetchProperties(false)
   }
+
 
   return (
     <section className="flex flex-col h-[calc(100vh-64px)] p-4 gap-4">
@@ -142,6 +163,61 @@ export default function MapaPage() {
               ))}
             </select>
           </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Área mínima (m²)</label>
+            <Input
+              type="number"
+              min="0"
+              value={areaMin}
+              onChange={(e) => setAreaMin(Number(e.target.value))}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Baños mínimos</label>
+            <Input
+              type="number"
+              min="1"
+              value={banosMin}
+              onChange={(e) => setBanosMin(Number(e.target.value))}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Estacionamientos mínimos</label>
+            <Input
+              type="number"
+              min="1"
+              value={estacionamientosMin}
+              onChange={(e) => setEstacionamientosMin(Number(e.target.value))}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Estado</label>
+            <select
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+              className="w-full h-10 border rounded px-3"
+            >
+              <option value="">Todos</option>
+              <option value="disponible">Disponible</option>
+              <option value="reservado">Reservado</option>
+              <option value="vendido">Vendido</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium">Categoría</label>
+            <select
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
+              className="w-full h-10 border rounded px-3"
+            >
+              <option value="">Todas</option>
+              <option value="casa">Casa</option>
+              <option value="departamento">Departamento</option>
+              {/* Puedes cargar dinámicamente desde backend */}
+            </select>
+          </div>
+
         </CardContent>
 
         <CardFooter className="flex gap-2">
@@ -155,7 +231,8 @@ export default function MapaPage() {
           <span className="text-lg text-muted-foreground">Cargando propiedades...</span>
         </div>
       ) : (
-        <BasicMap properties={properties} />
+        <BasicMap properties={properties} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
+
       )}
     </section>
   )
