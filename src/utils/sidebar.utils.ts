@@ -1,6 +1,6 @@
 
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon, FileTextIcon } from 'lucide-react'
 
 import { createElement } from 'react'
 
