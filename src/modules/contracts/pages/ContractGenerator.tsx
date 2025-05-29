@@ -9,7 +9,6 @@ import {
 } from '@/models/contract.model'
 
 
-
 const PAYMENT_METHODS = {
     EFECTIVO: '27677348-8a2d-44a7-9902-41e8f1fbc9b6',
     TARJETA: '53cffd4c-36db-4e73-852d-45e6f1d746be',

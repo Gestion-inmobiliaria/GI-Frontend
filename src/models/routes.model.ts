@@ -1,13 +1,13 @@
 import { type PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
-
-
 export enum PublicRoutes {
     LOGIN = '/login',
     RESET_PASSWORD = '/reset-password',
     LANDING = '/',
     REGISTER = '/register',
     SUBSCRIPTION = '/subscripcion',
+    // NUEVO: Ruta pública para firma digital
+    SIGNATURE = '/signature/:token',
 }
 
 export enum PrivateRoutes {

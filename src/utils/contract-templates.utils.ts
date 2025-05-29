@@ -1,47 +1,46 @@
 import { ContractType, ContractFormData, Property } from '@/models/contract.model'
 
 
-
 interface TemplateData extends ContractFormData {
-  property: Property;
-  currentDate: string;
+    property: Property
+    currentDate: string
 }
 
 function numeroALetras(num: number): string {
-  const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE']
-  const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA']
-  const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS']
-  
-  if (num === 0) return 'CERO'
-  if (num >= 1000000) return 'UN MILLÓN'
-  
-  let resultado = ''
-  
-  if (num >= 1000) {
-    const miles = Math.floor(num / 1000)
-    if (miles === 1) {
-      resultado += 'MIL '
-    } else {
-      resultado += unidades[miles] + ' MIL '
+    const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE']
+    const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA']
+    const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS']
+
+    if (num === 0) return 'CERO'
+    if (num >= 1000000) return 'UN MILLÓN'
+
+    let resultado = ''
+
+    if (num >= 1000) {
+        const miles = Math.floor(num / 1000)
+        if (miles === 1) {
+            resultado += 'MIL '
+        } else {
+            resultado += unidades[miles] + ' MIL '
+        }
+        num %= 1000
     }
-    num %= 1000
-  }
-  
-  if (num >= 100) {
-    resultado += centenas[Math.floor(num / 100)] + ' '
-    num %= 100
-  }
-  
-  if (num >= 10) {
-    resultado += decenas[Math.floor(num / 10)] + ' '
-    num %= 10
-  }
-  
-  if (num > 0) {
-    resultado += unidades[num] + ' '
-  }
-  
-  return resultado.trim()
+
+    if (num >= 100) {
+        resultado += centenas[Math.floor(num / 100)] + ' '
+        num %= 100
+    }
+
+    if (num >= 10) {
+        resultado += decenas[Math.floor(num / 10)] + ' '
+        num %= 10
+    }
+
+    if (num > 0) {
+        resultado += unidades[num] + ' '
+    }
+
+    return resultado.trim()
 }
 
 export const contractTemplates: Record<ContractType, (data: TemplateData) => string> = {
