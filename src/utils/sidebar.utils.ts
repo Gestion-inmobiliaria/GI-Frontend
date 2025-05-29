@@ -1,5 +1,5 @@
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon,Building2Icon, SettingsIcon, DatabaseIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -106,6 +106,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     ]
   },
   {
+    label: 'Mapa',
+    icon: createElement(MapIcon, { width: 20, height: 20 }),
+    path: '/mapa',
+    permissions: [PERMISSION.MAP_VIEW]
+  },
+  {
     label: 'Subscripción',
     icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
     path: '/subscripcion',
@@ -116,19 +122,19 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
     path: '/bitacora',
     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
-  }, 
+  },
   {
-   label: 'Configuraciones',
+    label: 'Configuraciones',
     icon: createElement(SettingsIcon, { width: 20, height: 20 }),
     path: '/backup',
     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW],
-  children: [
-    {
-      label: 'Backup & Restore',
-      icon: createElement(DatabaseIcon, { width: 20, height: 20 }),
-      path: '/backup',  
-      permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
-    }
-  ]
-}, 
+    children: [
+      {
+        label: 'Backup & Restore',
+        icon: createElement(DatabaseIcon, { width: 20, height: 20 }),
+        path: '/backup',
+        permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
+      }
+    ]
+  },
 ]
