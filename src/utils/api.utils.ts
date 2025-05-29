@@ -3,23 +3,24 @@ import { AppConfig } from '../config'
 
 
 export const ENDPOINTS = {
-    // auth
-    AUTH: '/api/auth',
+  // auth
+  AUTH: '/api/auth',
+  // plan
+  PLAN: '/api/plan',
+  REALSTATE: '/api/realstate',
+  // user
+  USER: '/api/user',
+  ROLE: '/api/role',
+  PERMISSION: '/api/permission',
 
-    // plan
-    PLAN: '/api/plan',
-    REALSTATE: '/api/realstate',
+  // property
+  PROPERTY: '/api/property',
+  // ubicacion
+  UBICACION: '/api/ubicacion',
 
-    // user
-    USER: '/api/user',
-    ROLE: '/api/role',
-    PERMISSION: '/api/permission',
+  // backup
+  BACKUP: '/api/backup', 
 
-    // property
-    PROPERTY: '/api/property',
-
-    // ubicacion
-    UBICACION: '/api/ubicacion'
 }
 
 export const API_BASEURL = AppConfig.API_URL
