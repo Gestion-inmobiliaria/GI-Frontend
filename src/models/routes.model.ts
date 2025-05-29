@@ -36,6 +36,9 @@ export enum PrivateRoutes {
 
   LOGS = '/bitacora',
 
+    //backup
+  BACKUP = '/backup',
+
   // Categories (nuevo)
   CATEGORIES = '/categorias',
   CATEGORY_CREATE = '/categorias/crear',
@@ -49,6 +52,8 @@ export enum PrivateRoutes {
   STATE_EDIT = PrivateRoutes.STATE + '/:id',
   STATE_DETAIL = PrivateRoutes.STATE + '/detalle/:id',
 
+  //map
+  MAPA = '/mapa', 
 }
 
 export interface Route {

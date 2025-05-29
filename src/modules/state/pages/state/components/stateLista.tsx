@@ -7,13 +7,14 @@ import {
 import { MoreHorizontal, Search, PlusCircleIcon, Trash, Pencil, Eye } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { 
-DropdownMenu,
-DropdownMenuContent, 
-DropdownMenuItem, 
-DropdownMenuLabel, 
-DropdownMenuSeparator, 
-DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CardHeader, CardDescription, CardTitle } from '@/components/ui/card'
@@ -36,26 +37,26 @@ import { type ApiBase } from '@/models'
 import { type State } from '@/modules/state/models/state.model'
 import { EstadoBadge } from './estadoBadge'
 
-export interface Categoria extends ApiBase{name:string;};
+export interface Categoria extends ApiBase { name: string; };
 
-export interface Usuario extends ApiBase{name:string;};
+export interface Usuario extends ApiBase { name: string; };
 
-export interface Modalidad extends ApiBase{ name:string;}
+export interface Modalidad extends ApiBase { name: string; }
 
-export interface Sector extends ApiBase{name:string;}
+export interface Sector extends ApiBase { name: string; }
 
 export interface NewState extends ApiBase {
-  descripcion:string
-   precio: number
-   estado: string
-   area: number
-   NroHabitaciones: number
-   NroBanos: number
-   NroEstacionamientos:number
-   user:Usuario
-   category:Categoria
-   modality:Modalidad
-   sector:Sector
+  descripcion: string
+  precio: number
+  estado: string
+  area: number
+  NroHabitaciones: number
+  NroBanos: number
+  NroEstacionamientos: number
+  user: Usuario
+  category: Categoria
+  modality: Modalidad
+  sector: Sector
 }
 const ActionsCell: React.FC<{ row: Row<NewState>, onDeleted: () => void }> = ({ row, onDeleted }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -63,21 +64,21 @@ const ActionsCell: React.FC<{ row: Row<NewState>, onDeleted: () => void }> = ({ 
   const { deleteState } = useDeleteState();
 
   const deletePermanentlyState = async () => {
-   try{
-    await toast.promise(deleteState(row.original.id), {
-      loading: 'Eliminando...',
-      success: () => {
-      return 'Inmueble eliminado exitosamente';
-      },
-      error(error) {
-        return error.errorMessages?.[0] ?? 'No se pudo eliminar el inmueble.';
-      }
-    });
-    setIsDialogOpen(false);
-    await onDeleted(); 
-  } catch (error) {
-    toast.error('Error al eliminar el inmueble.');
-  }
+    try {
+      await toast.promise(deleteState(row.original.id), {
+        loading: 'Eliminando...',
+        success: () => {
+          return 'Inmueble eliminado exitosamente';
+        },
+        error(error) {
+          return error.errorMessages?.[0] ?? 'No se pudo eliminar el inmueble.';
+        }
+      });
+      setIsDialogOpen(false);
+      await onDeleted();
+    } catch (error) {
+      toast.error('Error al eliminar el inmueble.');
+    }
   };
   return (
     <>
@@ -121,6 +122,7 @@ const ActionsCell: React.FC<{ row: Row<NewState>, onDeleted: () => void }> = ({ 
 }
 
 export function DataTableDemo() {
+
     useHeader([
       { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
       { label: 'Inmueble', path: PrivateRoutes.STATE } 
@@ -143,15 +145,16 @@ export function DataTableDemo() {
       })) ?? []
     }, [allStates])
 
-   const columns = React.useMemo<ColumnDef<NewState>[]>(
+
+  const columns = React.useMemo<ColumnDef<NewState>[]>(
     () => [
-    {
-      accessorKey: 'descripcion',
-      header: () => <div>Descripción</div>,
-      cell: ({ row }) => (
-       <div className="max-w-[200px] truncate" title={row.getValue('descripcion')}>
-         {row.getValue('descripcion')}
-        </div>
+      {
+        accessorKey: 'descripcion',
+        header: () => <div>Descripción</div>,
+        cell: ({ row }) => (
+          <div className="max-w-[200px] truncate" title={row.getValue('descripcion')}>
+            {row.getValue('descripcion')}
+          </div>
         )
     },
     {
@@ -218,35 +221,14 @@ export function DataTableDemo() {
     },
   ],
   [mutate]
+
   );
 
-    const [pagination, setPagination] = React.useState({
+  const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 5, // Puedes cambiar este valor a 5, 20, etc.
-    })
-  
-    const table = useReactTable({
-      data: newAllStates,
-      columns,
-      onSortingChange: setSorting,
-      onColumnFiltersChange: setColumnFilters,
-      onPaginationChange: setPagination,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      getFilteredRowModel: getFilteredRowModel(),
-      onColumnVisibilityChange: setColumnVisibility,
-      onRowSelectionChange: setRowSelection,
-      state: {
-        sorting,
-        columnFilters,
-        columnVisibility,
-        rowSelection,
-        pagination
-      }
-    })
-  
-    if (isLoading)return <Loading />
+  })
+
 
     if (error)
   return (
@@ -337,26 +319,112 @@ export function DataTableDemo() {
     </div>
   </div>
 
-  {/* Botones de navegación */}
-  <div className="space-x-2">
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => table.previousPage()}
-      disabled={!table.getCanPreviousPage()}
-    >
-      Anterior
-    </Button>
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => table.nextPage()}
-      disabled={!table.getCanNextPage()}
-    >
-      Siguiente
-    </Button>
-  </div>
-</div>
-</div>
-);
+
+  if (isLoading) return <Loading />
+
+  return (
+    <div className="w-full">
+      <CardHeader className="p-0">
+        <CardTitle>Inmuebles</CardTitle>
+        <CardDescription>Listado de todos los inmuebles registrados</CardDescription>
+      </CardHeader>
+
+      <div className="flex items-center py-4 justify-between">
+        <div className="relative max-w-sm">
+          <Input
+            placeholder="Buscar inmueble..."
+            value={(table.getColumn('descripcion')?.getFilterValue() as string) ?? ''}
+            onChange={(event) =>
+              table.getColumn('descripcion')?.setFilterValue(event.target.value)
+            }
+            className="pl-10 pr-4"
+          />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+        </div>
+
+        <Button
+          size="sm"
+          className="h-8 gap-1"
+          onClick={() => navigate(PrivateRoutes.STATE_CREAR)}
+        >
+          <PlusCircleIcon className="h-3.5 w-3.5" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            Agregar inmueble
+          </span>
+        </Button>
+      </div>
+
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="min-w-[900px]">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  {isLoading ? (
+                    <div className="grid place-content-center place-items-center w-full shrink-0 pt-6">
+                      <Loading />
+                    </div>
+                  ) : (
+                    'No hay resultados.'
+                  )}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex items-center justify-between space-x-2 py-4">
+        {/* Texto de selección y página actual */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-sm text-muted-foreground">
+          <div>
+            Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+          </div>
+        </div>
+
+        {/* Botones de navegación */}
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Siguiente
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }  
