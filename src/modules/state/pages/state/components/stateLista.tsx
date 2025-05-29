@@ -122,28 +122,29 @@ const ActionsCell: React.FC<{ row: Row<NewState>, onDeleted: () => void }> = ({ 
 }
 
 export function DataTableDemo() {
-  useHeader([
-    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Inmueble', path: PrivateRoutes.STATE }
-  ])
 
-  const navigate = useNavigate()
-  const { allStates = [], isLoading = false, mutate } = useGetAllState();
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    useHeader([
+      { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+      { label: 'Inmueble', path: PrivateRoutes.STATE } 
+    ])
+  
+    const navigate = useNavigate()
+   const { allStates = [], isLoading = false, mutate,error } = useGetAllState();
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
+  
+    const newAllStates = React.useMemo(() => {
+      return allStates?.map((state: State) => ({
+        ...state,
+        user: state.user.name,
+        category: state.category.name,
+        modality: state.modality.name,
+        sector: state.sector.name,
+      })) ?? []
+    }, [allStates])
 
-  console.log('All States:', allStates);
-  const newAllStates = React.useMemo(() => {
-    return allStates?.map((state: State) => ({
-      ...state,
-      user: state.user?.name ?? '-',
-      category: state.category?.name ?? '-',
-      modality: state.modality?.name ?? '-',
-      sector: state.sector?.name ?? '-',
-    })) ?? []
-  }, [allStates])
 
   const columns = React.useMemo<ColumnDef<NewState>[]>(
     () => [
@@ -155,71 +156,72 @@ export function DataTableDemo() {
             {row.getValue('descripcion')}
           </div>
         )
-      },
-      {
-        accessorKey: 'precio',
-        header: () => <div>Precio</div>,
-        cell: ({ row }) => {
-          const value = row.getValue('precio') as number
-          return <div>${value.toLocaleString()}</div>
-        }
-      },
-      {
-        accessorKey: 'area',
-        header: () => <div>Área (m²)</div>,
-        cell: ({ row }) => {
-          const value = row.getValue('area') as number
-          return <div>{value} m²</div>
-        }
-      },
-      {
-        accessorKey: 'estado',
-        header: () => <div>Estado</div>,
-        cell: ({ row }) => {
-          const estado = row.getValue('estado') as string;
-          return <EstadoBadge estado={estado} />;
-        },
-      },
-      {
-        accessorKey: 'user',
-        header: () => <div>Usuario</div>,
-        cell: ({ row }) => {
-          const usuario = row.getValue('user') as string
-          return <div>{usuario ?? '-'}</div>
-        }
-      },
-      {
-        accessorKey: 'category',
-        header: () => <div>Categoria</div>,
-        cell: ({ row }) => {
-          const categoria = row.getValue('category') as string
-          return <div>{categoria ?? '-'}</div>
-        }
-      },
-      {
-        accessorKey: 'modality',
-        header: () => <div>Modalidad</div>,
-        cell: ({ row }) => {
-          const modalidad = row.getValue('modality') as string
-          return <div>{modalidad ?? '-'}</div>
-        }
-      },
-      {
-        accessorKey: 'sector',
-        header: () => <div>Sector</div>,
-        cell: ({ row }) => {
-          const sector = row.getValue('sector') as string
-          return <div>{sector ?? '-'}</div>
-        }
-      },
-      {
-        id: 'actions',
-        enableHiding: false,
-        header: () => <div className='text-right'>Acciones</div>,
-        cell: ({ row }) => <ActionsCell row={row} onDeleted={mutate} />
-      },
-    ],
-    [mutate]
+    },
+    {
+      accessorKey: 'precio',
+      header: () => <div>Precio</div>,
+      cell: ({ row }) => {
+        const value = row.getValue('precio') as number
+        return <div>${value.toLocaleString()}</div>
+      }
+    },
+    {
+      accessorKey: 'area',
+      header: () => <div>Área (m²)</div>,
+      cell: ({ row }) => {
+        const value = row.getValue('area') as number
+        return <div>{value} m²</div>
+      }
+    },
+    {
+     accessorKey: 'estado',
+  header: () => <div>Estado</div>,
+  cell: ({ row }) => {
+    const estado = row.getValue('estado') as string;
+    return <EstadoBadge estado={estado} />;
+  },
+    },
+    {
+      accessorKey: 'user',
+      header: () => <div>Agente</div>,
+      cell: ({ row }) => {
+        const usuario = row.getValue('user') as string 
+        return <div>{usuario ?? '-'}</div>
+      }
+    },
+    {
+      accessorKey: 'category',
+      header: () => <div>Categoria</div>,
+      cell: ({ row }) => {
+        const categoria = row.getValue('category') as string
+        return <div>{categoria ?? '-'}</div>
+      }
+    },
+    {
+      accessorKey: 'modality',
+      header: () => <div>Modalidad</div>,
+      cell: ({ row }) => {
+        const modalidad = row.getValue('modality') as string
+        return <div>{modalidad ?? '-'}</div>
+      }
+    },
+    {
+      accessorKey: 'sector',
+      header: () => <div>Sector</div>,
+      cell: ({ row }) => {
+        const sector = row.getValue('sector') as string 
+        return <div>{sector ?? '-'}</div>
+      }
+    },
+    {
+     id: 'actions',
+     enableHiding: false,
+     header: () => <div className='text-right'>Acciones</div>,
+     cell: ({ row }) => <ActionsCell row={row} onDeleted={() => mutate()} />
+    },
+  ],
+  [mutate]
+
   );
 
   const [pagination, setPagination] = React.useState({
@@ -227,26 +229,96 @@ export function DataTableDemo() {
     pageSize: 5, // Puedes cambiar este valor a 5, 20, etc.
   })
 
-  const table = useReactTable({
-    data: newAllStates,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-      pagination
-    }
-  })
+
+    if (error)
+  return (
+    <div className="text-red-600 p-4 bg-red-100 rounded">
+      Error al cargar los inmuebles: {error.message || 'Intenta nuevamente más tarde.'}
+    </div>
+  )
+    return( 
+            <div className="w-full">
+              <CardHeader className="p-0">
+                <CardTitle>Inmuebles</CardTitle>
+                <CardDescription>Listado de todos los inmuebles registrados</CardDescription>
+              </CardHeader>
+          
+              <div className="flex items-center py-4 justify-between">
+                <div className="relative max-w-sm">
+                  <Input
+                    placeholder="Buscar inmueble por sector..."
+                    value={(table.getColumn('sector')?.getFilterValue() as string) ?? ''}
+                    onChange={(event) =>
+                     table.getColumn('sector')?.setFilterValue(event.target.value)
+                    }
+                    className="pl-10 pr-4"
+                  />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+                </div>
+          
+                <Button
+                  size="sm"
+                  className="h-8 gap-1"
+                  onClick={() => navigate(PrivateRoutes.STATE_CREAR)}
+                >
+                  <PlusCircleIcon className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Agregar inmueble
+                  </span>
+                </Button>
+              </div>
+          
+              <div className="rounded-md border overflow-x-auto">
+                <Table className="min-w-[900px]">
+                  <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(header.column.columnDef.header, header.getContext())}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                  <TableBody>
+                    {table.getRowModel().rows?.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                          {isLoading ? (
+                            <div className="grid place-content-center place-items-center w-full shrink-0 pt-6">
+                              <Loading />
+                            </div>
+                          ) : (
+                            'No hay resultados.'
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+          
+              <div className="flex items-center justify-between space-x-2 py-4">
+  {/* Texto de selección y página actual */}
+  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-sm text-muted-foreground">
+    <div>
+      Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+    </div>
+  </div>
+
 
   if (isLoading) return <Loading />
 

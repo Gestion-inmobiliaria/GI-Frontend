@@ -1,5 +1,7 @@
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
+
 import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon } from 'lucide-react'
+
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -124,6 +126,7 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
   },
   {
+
     label: 'Configuraciones',
     icon: createElement(SettingsIcon, { width: 20, height: 20 }),
     path: '/backup',
@@ -137,4 +140,5 @@ export const MenuSideBar: MenuHeaderRoute[] = [
       }
     ]
   },
+
 ]

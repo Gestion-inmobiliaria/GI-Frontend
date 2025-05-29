@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
-  FormControl,
+  FormControl, 
   FormField,
   FormItem,
   FormLabel,
@@ -111,7 +111,7 @@ const formSchema = z.object({
    .max(1, 'la comision no puede ser mayor a 1')
    .positive('la comsion debe ser un número positivo'),
 
-  condicionCompra: z
+  condicion_Compra: z
    .string({ required_error: 'La condicion de compra es requerida' })
    .min(1,'La condicion de compra no puede estar vacía'),
 
@@ -144,7 +144,6 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [loadingSectors, setLoadingSectors] = useState(true);
   const editMode = Boolean(id);
-//const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
 
   const { state } = useGetState(id as string );
 
@@ -158,8 +157,8 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
       NroHabitaciones: 0,
       NroBanos: 0,
       NroEstacionamientos: 0,
-      comision: 0,
-      condicionCompra: '',
+      comision: 0.01,
+      condicion_Compra: '',
       user: '',
       category: '',
       modality: '',
@@ -174,84 +173,54 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
     },
   });
 
-useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const response = await getCategories();
-      if (response.statusCode === 200 && Array.isArray(response.data)) {
-        setCategories(response.data);
-      } else {
-        console.error("Formato de respuesta inesperado:", response);
-        setCategories([]);
-      }
-    } catch (error) {
-      console.error("Error al obtener categorías:", error);
-      setCategories([]);
-    } finally {
-      setLoadingCategories(false);
+// Función genérica para cargar datos
+const fetchData = async ({
+  fetchFn,
+  setData,
+  setLoading,
+  dataName,
+}: {
+  fetchFn: () => Promise<any>,
+  setData: React.Dispatch<React.SetStateAction<any[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  dataName: string,
+}) => {
+  try {
+    const response = await fetchFn();
+    if (response.statusCode === 200 && Array.isArray(response.data)) {
+      setData(response.data);
+    } else {
+      console.error(`⚠️ Formato inesperado en ${dataName}:`, response);
+      setData([]);
     }
-  };
-
-  fetchCategories();
-}, []);
-
-useEffect(() => {
-  const fetchModalities = async () => {
-    try {
-      const response = await getModalities();
-      // Asegúrate de que response.data contiene el array de modalidades
-      if (response.statusCode === 200 && Array.isArray(response.data)) {
-        setModalities(response.data);
-      } else {
-        console.error("Formato de respuesta inesperado:", response);
-        setModalities([]);
-      }
-    } catch (error) {
-      console.error("Error al obtener modalidades:", error);
-      setModalities([]);
-    } finally {
-      setLoadingModalities(false);
-    }
-  };
-
-  fetchModalities();
-}, []);
+  } catch (error) {
+    console.error(`❌ Error al obtener ${dataName}:`, error);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
 useEffect(() => {
-  const fetchSectors = async () => {
-    try {
-      const response = await getSectors();
-      // Asegúrate de que response.data contiene el array de sectores
-      if (response.statusCode === 200 && Array.isArray(response.data)) {
-        setSectors(response.data);
-      } else {
-        console.error("Formato de respuesta inesperado:", response);
-        setSectors([]);
-      }
-    } catch (error) {
-      console.error("Error al obtener sectores:", error);
-      setSectors([]);
-    } finally {
-      setLoadingSectors(false);
-    }
-  };
-
-  fetchSectors();
+  fetchData({ fetchFn: getCategories, setData: setCategories, setLoading: setLoadingCategories, dataName: 'categorías' });
+  fetchData({ fetchFn: getModalities, setData: setModalities, setLoading: setLoadingModalities, dataName: 'modalidades' });
+  fetchData({ fetchFn: getSectors, setData: setSectors, setLoading: setLoadingSectors, dataName: 'sectores' });
 }, []);
 
   // Sincronizar valores cuando 'state' esté listo
   useEffect(() => {
-    if (state) {
+    // Solo resetea si hay id (modo edición) y hay datos de state
+    if (id && state) {
       form.reset({
         descripcion: state.descripcion ?? '',
-        precio: state.precio ?? 0,
-//        estado: ESTADO[state?.estado?.toUpperCase() as keyof typeof ESTADO] ?? ESTADO.DISPONIBLE,
-        area: state.area ?? 0,
-        NroHabitaciones: state.NroHabitaciones ?? 0,
-        NroBanos: state.NroBanos ?? 0,
-        NroEstacionamientos: state.NroEstacionamientos ?? 0,
-        comision: state.comision ?? 0,
-        condicionCompra: state.condicion_Compra ?? '',
+        precio: Number(state.precio) ?? 0,
+        estado: state.estado as ESTADO ?? ESTADO.DISPONIBLE,
+        area: Number(state.area) ?? 0,
+        NroHabitaciones: Number(state.NroHabitaciones) ?? 0,
+        NroBanos: Number(state.NroBanos) ?? 0,
+        NroEstacionamientos: Number(state.NroEstacionamientos) ?? 0,
+        comision: Number(state.comision) ?? 0,
+        condicion_Compra: state.condicion_Compra ?? '',
         user: state.user?.id ?? '',
         category: state.category?.id ?? '',
         modality: state.modality?.id ?? '',
@@ -260,15 +229,14 @@ useEffect(() => {
           direccion: state.ubicacion?.direccion ?? '',
           pais: state.ubicacion?.pais ?? '',
           ciudad: state.ubicacion?.ciudad ?? '',
-          latitud: state.ubicacion?.latitud ?? 0,
-          longitud: state.ubicacion?.longitud ?? 0,
+          latitud: Number(state.ubicacion?.latitud) ?? 0,
+          longitud: Number(state.ubicacion?.longitud) ?? 0,
         },
       });
     }
-  }, [state, form]);
+  }, [id, state]);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log('Datos enviados:', data)
     const request =id
     ? updateState({ id, ...data })
     : createState(data)
@@ -284,315 +252,376 @@ useEffect(() => {
       }, 1000)
       return successMessage
     },
-    error: (error) => error?.errorMessages?.[0] ?? errorMessage
+    error: (error) => {
+     if (error?.errorMessages?.[0]) return error.errorMessages[0];
+     if (typeof error === 'string') return error;
+     return errorMessage;
+    }
   })
 }
+const [searchLocation, setSearchLocation] = useState<{ pais: string; ciudad: string }>();
+
+// Helper para obtener coordenadas válidas
+const getInitialPosition = () => {
+  const lat = form.getValues("ubicacion.latitud");
+  const lng = form.getValues("ubicacion.longitud");
+  if (
+    typeof lat === "number" &&
+    typeof lng === "number" &&
+    !isNaN(lat) &&
+    !isNaN(lng) &&
+    lat !== 0 &&
+    lng !== 0
+  ) {
+    return [lat, lng] as [number, number];
+  }
+  return undefined;
+};
+
 return (
-<section className="grid flex-1 items-start gap-4 lg:gap-6">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="mx-auto w-full flex flex-col gap-4 lg:gap-6"
+  <section className="flex-1 grid gap-6">
+  <Form {...form}>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-6 mx-auto w-full"
+    >
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button
+          type="button"
+          onClick={() => navigate(PrivateRoutes.STATE)}
+          variant="outline"
+          size="icon"
+          className="h-7 w-7"
         >
-          <div>
-            <div className="flex items-center gap-4">
-              <Button
-                type="button"
-                onClick={() => navigate(PrivateRoutes.STATE)}
-                variant="outline"
-                size="icon"
-                className="h-7 w-7"
-              >
-                <ChevronLeftIcon className="h-4 w-4" />
-                <span className="sr-only">Volver</span>
-              </Button>
-              <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                {title}
-              </h2>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Button
-                  type="button"
-                  onClick={() => navigate(PrivateRoutes.STATE)}
-                  variant="outline"
-                  size="sm"
-                >
-                  Descartar
-                </Button>
-                <Button type="submit" size="sm" disabled={isMutating}>
-                  {buttonText}
-                </Button>
-              </div>
-            </div>
-          </div>
+          <ChevronLeftIcon className="h-4 w-4" />
+          <span className="sr-only">Volver</span>
+        </Button>
+        <h2 className="flex-1 text-xl font-semibold tracking-tight whitespace-nowrap sm:grow-0">
+          {title}
+        </h2>
+        <div className="hidden md:flex items-center gap-2 ml-auto">
+          <Button
+            type="button"
+            onClick={() => navigate(PrivateRoutes.STATE)}
+            variant="outline"
+            size="sm"
+          >
+            Descartar
+          </Button>
+          <Button type="submit" size="sm" disabled={isMutating}>
+            {buttonText}
+          </Button>
+        </div>
+      </div>
 
-          <div className="grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 lg:gap-6">
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Datos del Inmueble</CardTitle>
-              </CardHeader>
-
-              <CardContent className="grid gap-6">
-                <FormField control={form.control} name="descripcion" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} placeholder="Breve descripción del inmueble" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-
-              {/* Precio y Área */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField control={form.control} name="precio" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Precio</FormLabel>
-                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
-                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-                  <FormField control={form.control} name="area" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Área (m²)</FormLabel>
-                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-                </div>
-
-              {/* Habitaciones, Baños, Estacionamientos */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <FormField control={form.control} name="NroHabitaciones" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Habitaciones</FormLabel>
-                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-
-                  <FormField control={form.control} name="NroBanos" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Baños</FormLabel>
-                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-
-                 <FormField control={form.control} name="NroEstacionamientos" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Estacionamientos</FormLabel>
-                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-                </div>
-
-              {/* Comisión y Estado */}
-<div className="grid grid-cols-2 gap-4">
-  {editMode && (
-    <FormField control={form.control} name="estado" render={({ field }) => (
-      <FormItem>
-        <FormLabel>Estado</FormLabel>
-        <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecciona el estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="disponible">Disponible</SelectItem>
-              <SelectItem value="reservado">Reservado</SelectItem>
-              <SelectItem value="vendido">Vendido</SelectItem>
-              <SelectItem value="alquilado">Alquilado</SelectItem>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )} />
-  )}
-
-  <FormField control={form.control} name="comision" render={({ field }) => (
-    <FormItem>
-      <FormLabel>Comisión (%)</FormLabel>
-      <FormControl>
-        <Input
-          type="number"
-          step="0.01"
-          min="0"
-          max="1"
-          {...field}
-          value={field.value ?? ''}
-          onChange={e => {
-        const value = e.target.value;
-        field.onChange(value === '' ? '' : parseFloat(value));
-          }}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )} />
-</div>
-              {/* Condiciones de compra */}
-              <FormField control={form.control} name="condicionCompra" render={({ field }) => (
+      {/* Dos columnas en cards */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Columna izquierda */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Detalles del Inmueble</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="descripcion"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Condiciones de Compra</FormLabel>
+                  <FormLabel>Descripción</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="Ej. se requiere anticipo del 30%" />
+                    <Textarea {...field} placeholder="Descripción del inmueble" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )} />
-            </CardContent>
-          </Card>
-        </div>
-     {/* Agente encargado */}
-<Card className="w-full">
-  <CardHeader>
-    <CardTitle>Información del Inmueble</CardTitle>
-  </CardHeader>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="precio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Precio</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />  
 
-  <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {/* Agente encargado */}
-    <FormField control={form.control} name="user" render={({ field }) => (
-      <FormItem>
-        <FormLabel>Agente</FormLabel>
-        <FormControl>
-          <Select
-            onValueChange={field.onChange}
-            defaultValue={field.value}
-            disabled={isLoading || allUsers.length === 0}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={isLoading ? "Cargando usuarios..." : "Selecciona un agente"} />
-            </SelectTrigger>
-            <SelectContent>
-              {allUsers?.map((user: User) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )} />
+            <FormField
+              control={form.control}
+              name="area"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Área (m²)</FormLabel>
+                  <FormControl>
+                    <Input 
+                    type="number"
+                    step="0.01" 
+                    {...field} 
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="NroHabitaciones"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Número de habitaciones</FormLabel>
+                  <FormControl>
+                    <Input 
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="NroBanos"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Número de baños</FormLabel>
+                  <FormControl>
+                    <Input 
+                    type="number" 
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="NroEstacionamientos"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estacionamientos</FormLabel>
+                  <FormControl>
+                    <Input 
+                    type="number" 
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="estado"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={!editMode}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un estado" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(ESTADO).map((estado) => (
+                        <SelectItem key={estado} value={estado}>
+                          {estado}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="comision"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comisión (0 a 1)</FormLabel>
+                  <FormControl>
+                    <Input 
+                    type="number" 
+                    step="0.01" 
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="condicion_Compra"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Condición de Compra</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Ej: al contado, crédito, etc."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
 
-    {/* Categoría del inmueble */}
-    <FormField control={form.control} name="category" render={({ field }) => (
-      <FormItem>
-        <FormLabel>Categoría</FormLabel>
-        <FormControl>
-          <Select
-            onValueChange={field.onChange}
-            value={field.value}
-            disabled={loadingCategories}
-          >
-            <SelectTrigger>
-              <SelectValue 
-                placeholder={
-                  loadingCategories 
-                    ? "Cargando categorías..." 
-                    : categories.length === 0 
-                      ? "No hay categorías disponibles" 
-                      : "Selecciona una categoría"
-                } 
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((cat) => (
-                <SelectItem key={cat.id} value={cat.id}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )} />
+        {/* Columna derecha */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Relaciones</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="user"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Usuario</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={isLoading}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un usuario" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allUsers?.map((user: User) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Categoría</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={loadingCategories}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione una categoría" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="modality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Modalidad</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={loadingModalities}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione una modalidad" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {modalities.map((modality) => (
+                        <SelectItem key={modality.id} value={modality.id}>
+                          {modality.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sector"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sector</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={loadingSectors}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un sector" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sectors.map((sector) => (
+                        <SelectItem key={sector.id} value={sector.id}>
+                          {sector.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
-    {/* Modalidad del inmueble */}
-    <FormField control={form.control} name="modality" render={({ field }) => (
-      <FormItem>
-        <FormLabel>Modalidad</FormLabel>
-        <FormControl>
-          <Select
-            onValueChange={field.onChange}
-            value={field.value}
-            disabled={loadingModalities}
-          >
-            <SelectTrigger>
-              <SelectValue 
-                placeholder={
-                  loadingModalities 
-                    ? "Cargando modalidades..." 
-                    : modalities.length === 0 
-                      ? "No hay modalidades disponibles" 
-                      : "Selecciona una modalidad"
-                } 
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {modalities.map((mod) => (
-                <SelectItem key={mod.id} value={mod.id}>
-                  {mod.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )} />
+      {/* Botones móviles */}
+      <div className="flex justify-center gap-2 md:hidden">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => navigate(PrivateRoutes.STATE)}
+        >
+          Descartar
+        </Button>
+        <Button type="submit" size="sm" disabled={isMutating}>
+          {buttonText}
+        </Button>
+      </div>
 
-    {/* Sector del inmueble */}
-    <FormField control={form.control} name="sector" render={({ field }) => (
-      <FormItem>
-        <FormLabel>Sector</FormLabel>
-        <FormControl>
-          <Select
-            onValueChange={field.onChange}
-            value={field.value}
-            disabled={loadingSectors}
-          >
-            <SelectTrigger>
-              <SelectValue 
-                placeholder={
-                  loadingSectors 
-                    ? "Cargando sectores..." 
-                    : sectors.length === 0 
-                      ? "No hay sectores disponibles" 
-                      : "Selecciona un sector"
-                } 
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {sectors.map((sec) => (
-                <SelectItem key={sec.id} value={sec.id}>
-                  {sec.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )} />
-  </CardContent>
-</Card>
-
-<Card className="w-full mt-4">
+      <Card className="w-full mt-4">
   <CardHeader>
     <CardTitle>Ubicación Geográfica</CardTitle>
-    <CardDescription>Primero llena los datos de dirección, luego selecciona en el mapa.</CardDescription>
+    <CardDescription>
+      Llena los campos de dirección y selecciona el punto exacto en el mapa.
+    </CardDescription>
   </CardHeader>
-  <CardContent className="grid gap-4">
+  <CardContent className="grid gap-6">
+    
     {/* Inputs: País y Ciudad */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <FormField
@@ -600,9 +629,9 @@ return (
         name="ubicacion.pais"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>País</FormLabel>
+            <FormLabel htmlFor="pais">País</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} id="pais" placeholder="Ej: Bolivia" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -613,9 +642,9 @@ return (
         name="ubicacion.ciudad"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Ciudad</FormLabel>
+            <FormLabel htmlFor="ciudad">Ciudad</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} id="ciudad" placeholder="Ej: Santa Cruz" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -623,47 +652,63 @@ return (
       />
     </div>
 
-    {/* Input: Dirección completa */}
+    {/* Dirección completa */}
     <FormField
       control={form.control}
       name="ubicacion.direccion"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Dirección Completa</FormLabel>
+          <FormLabel htmlFor="direccion">Dirección completa</FormLabel>
           <FormControl>
-            <Input {...field} placeholder="Calle, número, zona, etc." />
+            <Input
+              {...field}
+              id="direccion"
+              placeholder="Calle, número, zona, etc."
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
       )}
     />
+    <Button
+  type="button"
+  onClick={() => {
+    const pais = form.getValues("ubicacion.pais");
+    const ciudad = form.getValues("ubicacion.ciudad");
+    if (pais && ciudad) {
+      setSearchLocation({ pais, ciudad });
+    } else {
+      // Opcional: podrías mostrar un mensaje de error si falta algo
+      console.log("Debes ingresar país y ciudad");
+    }
+  }}
+>
+  Buscar en el mapa
+</Button>
 
-    {/* Mapa */}
-    <div>
-      <FormLabel>Selecciona las coordenadas en el mapa</FormLabel>
-      <CoordinatePicker 
-        initialPosition={
-          form.getValues('ubicacion.latitud') && form.getValues('ubicacion.longitud')
-            ? [form.getValues('ubicacion.latitud'), form.getValues('ubicacion.longitud')]
-            : undefined
-        }
-        onCoordinateChange={(lat, lng) => {
-          form.setValue('ubicacion.latitud', lat);
-          form.setValue('ubicacion.longitud', lng);
-        }}
-      />
+    {/* Coordenadas en el mapa */}
+    <div className="space-y-2">
+      <FormLabel>Selecciona la ubicación en el mapa</FormLabel>
+      <CoordinatePicker
+  initialPosition={getInitialPosition()}
+  onCoordinateChange={(lat, lng) => {
+    form.setValue("ubicacion.latitud", lat);
+    form.setValue("ubicacion.longitud", lng);
+  }}
+  searchLocation={searchLocation}
+/>
+
+      {/* Mensaje si no hay coordenadas seleccionadas */}
+      {!(form.getValues("ubicacion.latitud") && form.getValues("ubicacion.longitud")) && (
+        <p className="text-sm text-destructive">Selecciona un punto en el mapa.</p>
+      )}
     </div>
-  </CardContent>
-</Card>
+   </CardContent>
+   </Card>
 
-        {/* Botones móviles */}
-        <div className="flex justify-center gap-2 md:hidden">
-          <Button type="button" variant="outline" size="sm" onClick={() => navigate(PrivateRoutes.STATE)}>Descartar</Button>
-          <Button type="submit" size="sm" disabled={isMutating}>{buttonText}</Button>
-        </div>
-      </form>
-    </Form>
-  </section>
-)
+    </form>
+  </Form>
+</section>
+);
 }
 export default StateFormPage
