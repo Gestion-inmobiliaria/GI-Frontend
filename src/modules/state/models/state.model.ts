@@ -24,7 +24,6 @@ export interface State extends ApiBase{
  NroEstacionamientos:number
  comision:number //<- recien se agrego
  condicion_Compra: string //<- recien se agrego
-
  user:User
  category:Category 
  modality:Modality 

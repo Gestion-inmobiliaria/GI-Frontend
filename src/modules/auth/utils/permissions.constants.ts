@@ -48,6 +48,10 @@ export enum PERMISSION {
   MODALITY = 'Modalidad',
   MODALITY_SHOW = 'Mostrar modalidades',
 
+  // backup
+  BACKUP_CREATE = 'Crear backups',
+    BACKUP_RESTORE = 'Restaurar backups',
+
 }
 
 export const modulePermissions = {
@@ -76,6 +80,5 @@ export const modulePermissions = {
   log: [
     PERMISSION.LOG,
     PERMISSION.LOG_SHOW
-
-  ]
+  ],
 }
