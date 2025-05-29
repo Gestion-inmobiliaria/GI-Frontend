@@ -2,35 +2,62 @@ import { API_URL } from '@/config/constants'
 import React, { useState, useEffect } from 'react'
 import SignatureStatusBadge from '@/components/contracts/SignatureStatusBadge'
 import { ContractSignatureService } from '@/services/contract-signature.service'
-import { Contract, SignatureStatus, SignerType, SignatureStatusResponse } from '@/models/contract.model'
+import { SignatureStatus, SignerType, SignatureStatusResponse } from '@/models/contract.model'
 
+// Interfaces para la respuesta del backend (estructura real)
+interface PropertyBackend {
+    id: string
+    createdAt: string
+    updatedAt: string
+    descripcion: string
+    precio: string
+    estado: string
+    area: string
+    NroHabitaciones: number
+    NroBanos: number
+    NroEstacionamientos: number
+}
 
-// Interface para el contrato actualizada
-// interface Property {
-//     id: string
-//     createdAt: string
-//     updatedAt: string
-//     descripcion: string
-//     precio: string
-//     estado: string
-//     area: string
-//     NroHabitaciones: number
-//     NroBanos: number
-//     NroEstacionamientos: number
-// }
+interface PaymentMethodBackend {
+    id: string
+    createdAt: string
+    updatedAt: string
+    name: string
+}
 
-// interface PaymentMethod {
-//     id: string
-//     createdAt: string
-//     updatedAt: string
-//     name: string
-// }
+// Interface para contrato tal como viene del backend
+interface ContractBackend {
+    id: string
+    contractNumber: number
+    type: string
+    status: string
+    amount: string | number
+    startDate: string
+    endDate: string
+    clientName: string
+    clientDocument: string
+    clientPhone?: string
+    clientEmail?: string
+    agentName: string
+    agentDocument: string
+    contractContent: string
+    contractFormat: string
+    notes?: string
+    property: PropertyBackend
+    payment_method: PaymentMethodBackend
+    createdAt: string
+    updatedAt: string
+    // Campos de firma (pueden no existir en contratos antiguos)
+    signatureStatus?: SignatureStatus
+    signatureStartedAt?: string
+    signatures?: any[]
+}
 
 const ContractList: React.FC = () => {
-  const [contracts, setContracts] = useState<Contract[]>([])
+  const [contracts, setContracts] = useState<ContractBackend[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedContract, setSelectedContract] = useState<Contract | null>(null)
+  const [selectedContract, setSelectedContract] = useState<ContractBackend | null>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [signatureStatusFilter, setSignatureStatusFilter] = useState<SignatureStatus | ''>('')
   const [showSignatureModal, setShowSignatureModal] = useState<boolean>(false)
@@ -53,7 +80,7 @@ const ContractList: React.FC = () => {
         throw new Error(`Error al obtener contratos: ${response.status}`)
       }
       
-      const data: Contract[] = await response.json()
+      const data: ContractBackend[] = await response.json()
       setContracts(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -85,13 +112,13 @@ const ContractList: React.FC = () => {
   }
 
   // Función para decodificar y mostrar el contenido del contrato
-  const viewContract = (contract: Contract) => {
+  const viewContract = (contract: ContractBackend) => {
     setSelectedContract(contract)
     setShowModal(true)
   }
 
   // NUEVA FUNCIÓN: Ver detalles de firma
-  const viewSignatureDetails = async (contract: Contract) => {
+  const viewSignatureDetails = async (contract: ContractBackend) => {
     try {
       const details = await ContractSignatureService.getSignatureStatus(contract.id)
       setSignatureDetails(details)
@@ -104,7 +131,7 @@ const ContractList: React.FC = () => {
   }
 
   // NUEVA FUNCIÓN: Iniciar proceso de firma para contrato existente
-  const initiateSignature = async (contract: Contract) => {
+  const initiateSignature = async (contract: ContractBackend) => {
     const clientEmail = prompt('Ingrese email del cliente:', contract.clientEmail || '')
     const agentEmail = prompt('Ingrese email del agente:', 'agente@inmobiliaria.com')
 
@@ -148,6 +175,11 @@ const ContractList: React.FC = () => {
     } catch (error) {
       return 'Error al decodificar el contenido del contrato'
     }
+  }
+
+  // Función para obtener estado de firma (con fallback para contratos antiguos)
+  const getSignatureStatus = (contract: ContractBackend): SignatureStatus => {
+    return contract.signatureStatus || SignatureStatus.NO_REQUIRED
   }
 
   // Componente de carga
@@ -249,11 +281,11 @@ const ContractList: React.FC = () => {
                 {/* NUEVO: Estado de firma */}
                 <div className="mb-4">
                   <SignatureStatusBadge 
-                    status={contract.signatureStatus} 
+                    status={getSignatureStatus(contract)} 
                     size="sm"
                     className="w-full justify-center"
                   />
-                  {contract.signatureStatus !== SignatureStatus.NO_REQUIRED && (
+                  {getSignatureStatus(contract) !== SignatureStatus.NO_REQUIRED && (
                     <button
                       onClick={() => viewSignatureDetails(contract)}
                       className="mt-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
@@ -309,11 +341,11 @@ const ContractList: React.FC = () => {
                 {/* Información de la propiedad */}
                 <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded">
                   <h5 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Propiedad</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{contract.property.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{contract.property.descripcion}</p>
                   <div className="grid grid-cols-3 gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{contract.property.address}</span>
-                    <span>${contract.property.price}</span>
-                    <span>{contract.property.city}</span>
+                    <span>{contract.property.area}m²</span>
+                    <span>{contract.property.NroHabitaciones} hab.</span>
+                    <span>{contract.property.NroBanos} baños</span>
                   </div>
                 </div>
 
@@ -335,7 +367,7 @@ const ContractList: React.FC = () => {
                   </button>
                   
                   {/* NUEVO: Botón para iniciar firma si no tiene proceso de firma */}
-                  {contract.signatureStatus === SignatureStatus.NO_REQUIRED && (
+                  {getSignatureStatus(contract) === SignatureStatus.NO_REQUIRED && (
                     <button
                       onClick={() => initiateSignature(contract)}
                       className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors"
