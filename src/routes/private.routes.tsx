@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { type RootState } from '@/redux/store'
 import DashboardAdminPage from '@/modules/dashboard/admin'
 import LogsPageWithPermissions from '@/modules/logs/pages/LogsPage'
+import BackupPage from '@/modules/backup/pages/backup'
 
 const Layout = lazy(() => import('@/layout/index'))
 
@@ -47,6 +48,7 @@ const Private = () => {
     >
       <Route path="/app" element={<DashboardAdminPage />} />
       <Route path="/bitacora" element={<LogsPageWithPermissions />} />
+      <Route path="/backup" element={<BackupPage />} />
     </Route>
   )
 

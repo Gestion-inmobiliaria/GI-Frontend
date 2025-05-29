@@ -14,7 +14,10 @@ export const ENDPOINTS = {
   // property
   PROPERTY: '/api/property',
   // ubicacion
-  UBICACION: '/api/ubicacion'
+  UBICACION: '/api/ubicacion',
+
+  // backup
+  BACKUP: '/api/backup', 
 }
 
 export const API_BASEURL = AppConfig.API_URL
