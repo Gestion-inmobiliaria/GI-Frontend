@@ -3,7 +3,7 @@ import { userRoutes, sectorRoutes, categoryRoutes, modalityRoutes, logRoutes } f
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 import { stateRoutes } from './state.utils'
-
+import { mapRoutes } from './mapRoutes'
 const DashboardPage = lazy(() => import('@modules/dashboard'))
 const SettingPage = lazy(() => import('@modules/settings/pages/setting'))
 const NotFound = lazy(() => import('@/components/not-found'))
@@ -47,5 +47,6 @@ export const PrivateAllRoutes: Route[] = [
   ...stateRoutes,
   ...categoryRoutes,
   ...modalityRoutes,
-  ...logRoutes
+  ...logRoutes,
+   ...mapRoutes 
 ]

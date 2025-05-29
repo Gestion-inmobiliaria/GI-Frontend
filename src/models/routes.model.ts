@@ -47,6 +47,10 @@ export enum PrivateRoutes {
   STATE = '/state',
   STATE_CREAR = PrivateRoutes.STATE + '/crear',
   STATE_EDIT = PrivateRoutes.STATE + '/:id',
+  STATE_DETAIL = PrivateRoutes.STATE + '/detalle/:id',
+
+  //map
+  MAPA = '/mapa' 
 
 }
 

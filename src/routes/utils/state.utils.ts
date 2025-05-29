@@ -4,6 +4,8 @@ import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
 const StateFormPage = lazy(() => import('@modules/state/pages/state/components/state-form'))
 const StatePage= lazy(() => import('@/modules/state/pages/state/index'))
+const StateDetailPage = lazy(() => import('@/modules/state/pages/state/components/stateDetailPage'))
+
 export const stateRoutes: Route[] = [
   {
     path: PrivateRoutes.STATE,
@@ -19,5 +21,10 @@ export const stateRoutes: Route[] = [
     path: PrivateRoutes.STATE_EDIT,
     element: createElement(StateFormPage, { buttonText: 'Editar propiedad', title: 'Actualizar propiedad' }),
     permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
+  },
+   {
+    path: PrivateRoutes.STATE_DETAIL,
+    element: createElement(StateDetailPage),
+    permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW],
   },
 ]

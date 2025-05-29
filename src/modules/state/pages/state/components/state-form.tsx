@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -16,45 +16,32 @@ import {
   useUpdateState
 } from '@/modules/state/hooks/useState'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-//  CheckCheckIcon,
-  ChevronLeftIcon,
-//  ChevronsUpDownIcon
-} from 'lucide-react'
+import {ChevronLeftIcon,} from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
-/*import {
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'*/
+} from '@/components/ui/select'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { useHeader } from '@/hooks'
 import { type IFormProps } from '@/models'
-/*import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'*/
-/*import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command'
-import { cn } from '@/lib/utils'*/
 import { ESTADO } from '@/modules/state/models/estado.model'
 import { Textarea } from '@/components/ui/textarea'
-//import { useGetAllUser} from '@/modules/users/hooks/useUser'
-
-
-
-/*no pude hacer la api de google maps no tenia tarjertas para hacerlas */
+import { useEffect, useState } from 'react'
+import { useGetAllUser } from '@/modules/users/hooks/useUser'
+import { getModalities } from '@/services/modality.service'
+import { getCategories } from '@/services/category.service'
+import { getSectors } from '@/services/sector.service'
+import { User } from '@/modules/users/models/user.model'
+import { Category } from '@/models/category.model'
+import { Modality } from '@/models/modality.model'
+import { Sector } from './stateLista'
+import { CoordinatePicker } from './state-maps'
 
 const createUbicacionSchema = z.object({
     direccion: z
@@ -90,8 +77,13 @@ const formSchema = z.object({
    .number({ required_error: 'El precio es requerido' })
    .positive('El precio debe ser un número positivo'),
 
-   estado: z.enum([ESTADO.DISPONIBLE,ESTADO.OCUPADO], {
-    message: 'El estado es requerido'
+   estado: z.enum([
+    ESTADO.DISPONIBLE,
+    ESTADO.RESERVADO,
+    ESTADO.VENDIDO,
+    ESTADO.ALQUILADO,
+    ESTADO.ANTICRETADO],{
+     message: 'El estado es requerido'
   }),
  
  area: z
@@ -113,28 +105,23 @@ const formSchema = z.object({
    .int('El número de estacionamientos debe ser un número entero')
    .nonnegative('No puede ser negativo'),
 
-   /*se agrego los campos de dueños 
-    pero esta comentado por que todavia no hay dueños
-  
-  ci: z
-      .number({ required_error: 'El carnet de identidad es requerido' })
-      .int('El carnet de identidad debe ser un número entero')
-      .positive('El carnet de identidad debe ser un número positivo')
-      .min(1, 'El código es requerido'),
-  name: z
-      .string({ required_error: 'El nombre es requerido' })
-      .min(3, 'El nombre debe tener al menos 3 caracteres')
-      .max(100, 'El nombre debe tener menos de 100 caracteres'),
+  comision: z
+   .number({ required_error: 'la comision es requerido' })
+   .min(0.01, 'la comision debe ser mayor a 0')
+   .max(1, 'la comision no puede ser mayor a 1')
+   .positive('la comsion debe ser un número positivo'),
 
-  telefono: z
-  .number({ required_error: 'El telefono es requerida' })
-  .positive('El telefono debe ser un número positivo'),
-  */
+  condicionCompra: z
+   .string({ required_error: 'La condicion de compra es requerida' })
+   .min(1,'La condicion de compra no puede estar vacía'),
 
+//relaciones 
   user: z.string().min(1, 'El usuario es requerido'),
   category: z.string().min(1, 'La categoria es requerida'),
   modality: z.string().min(1, 'La modalidad es requerida'),
   sector: z.string().min(1, 'El sector es requerido'),
+
+  //ubicacion  
   ubicacion: createUbicacionSchema 
 });
 
@@ -142,74 +129,166 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
     { label: 'Inmueble', path: PrivateRoutes.STATE },
-    { label: title }
-  ])
+    { label: title },
+  ]);
 
-  const { id } = useParams()
-  console.log(id)
-  const navigate = useNavigate()
-  const { createState, isMutating } = useCreateState()
-  const { updateState } = useUpdateState()
-//  const { allUsers } = useGetAllUser() por alguna razon dice que devuelve un any
-  const { state } = useGetState(id)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { createState, isMutating } = useCreateState();
+  const { updateState } = useUpdateState();
+  const { allUsers, isLoading} = useGetAllUser(); 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [modalities, setModalities] = useState<Modality[]>([]);
+  const [loadingModalities, setLoadingModalities] = useState(true);
+  const [sectors, setSectors] = useState<Sector[]>([]);
+  const [loadingSectors, setLoadingSectors] = useState(true);
+  const editMode = Boolean(id);
+//const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
+
+  const { state } = useGetState(id as string );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-     values: {
-        descripcion: state?.descripcion ?? '',
-        precio: state?.precio ?? 0,
-        estado: state?.estado ?? ESTADO.DISPONIBLE,
-        area: state?.area ?? 0,
-        NroHabitaciones: state?.NroHabitaciones ?? 0,
-        NroBanos: state?.NroBanos ?? 0,
-        NroEstacionamientos: state?.NroEstacionamientos ?? 0,
-        user: state?.user?.id ?? '',
-        category: state?.category ?? '', //ponerle el id cuando este catagoria
-        modality: state?.modality ?? '', //poner el id cuando este modalidad
-        sector: state?.sector?.id ?? '',
-         ubicacion: {
-           direccion: state?.ubicacion?.direccion ?? '',
-           pais: state?.ubicacion?.pais ?? '',
-           ciudad: state?.ubicacion?.ciudad ?? '',
-           latitud: state?.ubicacion?.latitud ?? 0,
-           longitud: state?.ubicacion?.longitud ?? 0,
-        },
+    defaultValues: {
+      descripcion: '',
+      precio: 0,
+      estado: ESTADO.DISPONIBLE,
+      area: 0,
+      NroHabitaciones: 0,
+      NroBanos: 0,
+      NroEstacionamientos: 0,
+      comision: 0,
+      condicionCompra: '',
+      user: '',
+      category: '',
+      modality: '',
+      sector: '',
+      ubicacion: {
+        direccion: '',
+        pais: '',
+        ciudad: '',
+        latitud: 0,
+        longitud: 0,
+      },
+    },
+  });
+
+useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const response = await getCategories();
+      if (response.statusCode === 200 && Array.isArray(response.data)) {
+        setCategories(response.data);
+      } else {
+        console.error("Formato de respuesta inesperado:", response);
+        setCategories([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener categorías:", error);
+      setCategories([]);
+    } finally {
+      setLoadingCategories(false);
     }
-  })
+  };
+
+  fetchCategories();
+}, []);
+
+useEffect(() => {
+  const fetchModalities = async () => {
+    try {
+      const response = await getModalities();
+      // Asegúrate de que response.data contiene el array de modalidades
+      if (response.statusCode === 200 && Array.isArray(response.data)) {
+        setModalities(response.data);
+      } else {
+        console.error("Formato de respuesta inesperado:", response);
+        setModalities([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener modalidades:", error);
+      setModalities([]);
+    } finally {
+      setLoadingModalities(false);
+    }
+  };
+
+  fetchModalities();
+}, []);
+
+useEffect(() => {
+  const fetchSectors = async () => {
+    try {
+      const response = await getSectors();
+      // Asegúrate de que response.data contiene el array de sectores
+      if (response.statusCode === 200 && Array.isArray(response.data)) {
+        setSectors(response.data);
+      } else {
+        console.error("Formato de respuesta inesperado:", response);
+        setSectors([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener sectores:", error);
+      setSectors([]);
+    } finally {
+      setLoadingSectors(false);
+    }
+  };
+
+  fetchSectors();
+}, []);
+
+  // Sincronizar valores cuando 'state' esté listo
+  useEffect(() => {
+    if (state) {
+      form.reset({
+        descripcion: state.descripcion ?? '',
+        precio: state.precio ?? 0,
+//        estado: ESTADO[state?.estado?.toUpperCase() as keyof typeof ESTADO] ?? ESTADO.DISPONIBLE,
+        area: state.area ?? 0,
+        NroHabitaciones: state.NroHabitaciones ?? 0,
+        NroBanos: state.NroBanos ?? 0,
+        NroEstacionamientos: state.NroEstacionamientos ?? 0,
+        comision: state.comision ?? 0,
+        condicionCompra: state.condicion_Compra ?? '',
+        user: state.user?.id ?? '',
+        category: state.category?.id ?? '',
+        modality: state.modality?.id ?? '',
+        sector: state.sector?.id ?? '',
+        ubicacion: {
+          direccion: state.ubicacion?.direccion ?? '',
+          pais: state.ubicacion?.pais ?? '',
+          ciudad: state.ubicacion?.ciudad ?? '',
+          latitud: state.ubicacion?.latitud ?? 0,
+          longitud: state.ubicacion?.longitud ?? 0,
+        },
+      });
+    }
+  }, [state, form]);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log('Datos enviados:', data)
-    if (id) {
-      toast.promise(updateState({ id, ...data }), {
-        loading: 'Actualizando Inmueble...',
-        success: () => {
-          setTimeout(() => {
-            navigate(PrivateRoutes.STATE, { replace: true })
-          }, 1000)
-          return 'Inmueble actualizado exitosamente'
-        },
-        error(error) {
-          return error.errorMessages[0] ?? 'Error al actualizar el Inmueble'
-        }
-      })
-    } else {
-      toast.promise(createState(data), {
-        loading: 'Creando Inmueble...',
-        success: () => {
-          setTimeout(() => {
-            navigate(PrivateRoutes.STATE, { replace: true })
-          }, 1000)
-          return 'Inmueble creado exitosamente'
-        },
-        error(error) {
-          return error.errorMessages[0] ?? 'Error al crear el Inmueble'
-        }
-      })
-    }
-  }
+    const request =id
+    ? updateState({ id, ...data })
+    : createState(data)
+    const loadingMessage = id ?'Actualizando Inmueble...':'Creando Inmueble...'
+    const successMessage = id ? 'Inmueble actualizado exitosamente': 'Inmueble creado exitosamente' 
+    const errorMessage = id ? 'Error al actualizar el Inmueble': 'Error al crear el Inmueble'
 
-  return (
-    <section className="grid flex-1 items-start gap-4 lg:gap-6">
+    toast.promise(request, {
+    loading: loadingMessage,
+    success: () => {
+      setTimeout(() => {
+        navigate(PrivateRoutes.STATE, { replace: true })
+      }, 1000)
+      return successMessage
+    },
+    error: (error) => error?.errorMessages?.[0] ?? errorMessage
+  })
+}
+return (
+<section className="grid flex-1 items-start gap-4 lg:gap-6">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -219,9 +298,7 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
             <div className="flex items-center gap-4">
               <Button
                 type="button"
-                onClick={() => {
-                  navigate(PrivateRoutes.STATE)
-                }}
+                onClick={() => navigate(PrivateRoutes.STATE)}
                 variant="outline"
                 size="icon"
                 className="h-7 w-7"
@@ -235,9 +312,7 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Button
                   type="button"
-                  onClick={() => {
-                    navigate(PrivateRoutes.STATE)
-                  }}
+                  onClick={() => navigate(PrivateRoutes.STATE)}
                   variant="outline"
                   size="sm"
                 >
@@ -250,377 +325,345 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
             </div>
           </div>
 
-          {/* Contenido del formulario */}
-      <div className="grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 lg:gap-6">
-        {/* Sección principal */}
-        <Card className="w-full">
-          <CardHeader><CardTitle>Datos del Inmueble </CardTitle></CardHeader>
-          <CardContent className="grid gap-4 lg:gap-6">
+          <div className="grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 lg:gap-6">
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>Datos del Inmueble</CardTitle>
+              </CardHeader>
 
-            {/* Inmueble */}
-            <FormField control={form.control} name="descripcion" render={({ field }) => (
-              <FormItem><FormLabel>Descripción</FormLabel>
-                <FormControl><Textarea {...field} placeholder="Descripción del inmueble" /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
+              <CardContent className="grid gap-6">
+                <FormField control={form.control} name="descripcion" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} placeholder="Breve descripción del inmueble" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField control={form.control} name="precio" render={({ field }) => (
-                <FormItem><FormLabel>Precio</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="area" render={({ field }) => (
-                <FormItem><FormLabel>Área (m²)</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </div>
+              {/* Precio y Área */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="precio" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio</FormLabel>
+                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="area" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Área (m²)</FormLabel>
+                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <FormField control={form.control} name="NroHabitaciones" render={({ field }) => (
-                <FormItem><FormLabel>Habitaciones</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="NroBanos" render={({ field }) => (
-                <FormItem><FormLabel>Baños</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="NroEstacionamientos" render={({ field }) => (
-                <FormItem><FormLabel>Estacionamientos</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </div>
+              {/* Habitaciones, Baños, Estacionamientos */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <FormField control={form.control} name="NroHabitaciones" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Habitaciones</FormLabel>
+                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
 
-            {/* Dueño */}
-            {/*
-            <div className="grid grid-cols-3 gap-4">
-              <FormField control={form.control} name="ci" render={({ field }) => (
-                <FormItem><FormLabel>CI Dueño</FormLabel>
-                  <FormControl><Input type="number" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="nombreDuenio" render={({ field }) => (
-                <FormItem><FormLabel>Nombre Dueño</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="telefonoDuenio" render={({ field }) => (
-                <FormItem><FormLabel>Teléfono</FormLabel>
-                  <FormControl><Input type="tel" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </div>*/}
-          </CardContent>
-        </Card>
+                  <FormField control={form.control} name="NroBanos" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Baños</FormLabel>
+                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
 
-        {/* Sección derecha */}
-        <Card className="w-full h-fit">
-          <CardHeader><CardTitle>Asignacion</CardTitle></CardHeader>
-          <CardContent className="grid gap-4 lg:gap-6">
+                 <FormField control={form.control} name="NroEstacionamientos" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Estacionamientos</FormLabel>
+                      <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
 
-            {/* Selects */}
-            {/* 
-            <FormField
-              control={form.control}
-              name="user"
-              render={({ field }) => (
-              <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-                <FormLabel className="leading-normal">Usuario *</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                <FormControl>
-                   <Button
-                    variant="outline"
-                    role="combobox"
-                    className={cn(
-                    'justify-between font-normal',
-                    !field.value && 'text-muted-foreground'
-                    )}
-                  >
-                {field.value ? (
-                <span className="text-ellipsis whitespace-nowrap overflow-hidden">
-                  {allUsers?.find((user) => user.id === field.value)?.name}
-                </span>
-                ) : (
-                <span className="text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden">
-                  Seleccionar usuario
-                </span>
-              )}
-              <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="p-0">
-          <Command>
-            <CommandInput placeholder="Buscar usuario..." />
-            <CommandList>
-              <CommandEmpty>Usuario no encontrado.</CommandEmpty>
-              <CommandGroup>
-                {allUsers?.map((user) => (
-                  <CommandItem
-                    value={user.name}
-                    key={user.id}
-                    onSelect={() => {
-                      form.setValue('user', user.id)
-                      form.clearErrors('user')
-                    }}
-                  >
-                    <CheckCheckIcon
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        user.id === field.value ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                    {user.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+              {/* Comisión y Estado */}
+<div className="grid grid-cols-2 gap-4">
+  {editMode && (
+    <FormField control={form.control} name="estado" render={({ field }) => (
+      <FormItem>
+        <FormLabel>Estado</FormLabel>
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona el estado" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="disponible">Disponible</SelectItem>
+              <SelectItem value="reservado">Reservado</SelectItem>
+              <SelectItem value="vendido">Vendido</SelectItem>
+              <SelectItem value="alquilado">Alquilado</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )} />
+  )}
+
+  <FormField control={form.control} name="comision" render={({ field }) => (
+    <FormItem>
+      <FormLabel>Comisión (%)</FormLabel>
+      <FormControl>
+        <Input
+          type="number"
+          step="0.01"
+          min="0"
+          max="1"
+          {...field}
+          value={field.value ?? ''}
+          onChange={e => {
+        const value = e.target.value;
+        field.onChange(value === '' ? '' : parseFloat(value));
+          }}
+        />
+      </FormControl>
       <FormMessage />
     </FormItem>
-  )}
-/>
-<FormField
-  control={form.control}
-  name="category"
-  render={({ field }) => (
-    <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-      <FormLabel className="leading-normal">Categoría *</FormLabel>
-      <Popover>
-        <PopoverTrigger asChild>
+  )} />
+</div>
+              {/* Condiciones de compra */}
+              <FormField control={form.control} name="condicionCompra" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Condiciones de Compra</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder="Ej. se requiere anticipo del 30%" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </CardContent>
+          </Card>
+        </div>
+     {/* Agente encargado */}
+<Card className="w-full">
+  <CardHeader>
+    <CardTitle>Información del Inmueble</CardTitle>
+  </CardHeader>
+
+  <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {/* Agente encargado */}
+    <FormField control={form.control} name="user" render={({ field }) => (
+      <FormItem>
+        <FormLabel>Agente</FormLabel>
+        <FormControl>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            disabled={isLoading || allUsers.length === 0}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={isLoading ? "Cargando usuarios..." : "Selecciona un agente"} />
+            </SelectTrigger>
+            <SelectContent>
+              {allUsers?.map((user: User) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )} />
+
+    {/* Categoría del inmueble */}
+    <FormField control={form.control} name="category" render={({ field }) => (
+      <FormItem>
+        <FormLabel>Categoría</FormLabel>
+        <FormControl>
+          <Select
+            onValueChange={field.onChange}
+            value={field.value}
+            disabled={loadingCategories}
+          >
+            <SelectTrigger>
+              <SelectValue 
+                placeholder={
+                  loadingCategories 
+                    ? "Cargando categorías..." 
+                    : categories.length === 0 
+                      ? "No hay categorías disponibles" 
+                      : "Selecciona una categoría"
+                } 
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )} />
+
+    {/* Modalidad del inmueble */}
+    <FormField control={form.control} name="modality" render={({ field }) => (
+      <FormItem>
+        <FormLabel>Modalidad</FormLabel>
+        <FormControl>
+          <Select
+            onValueChange={field.onChange}
+            value={field.value}
+            disabled={loadingModalities}
+          >
+            <SelectTrigger>
+              <SelectValue 
+                placeholder={
+                  loadingModalities 
+                    ? "Cargando modalidades..." 
+                    : modalities.length === 0 
+                      ? "No hay modalidades disponibles" 
+                      : "Selecciona una modalidad"
+                } 
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {modalities.map((mod) => (
+                <SelectItem key={mod.id} value={mod.id}>
+                  {mod.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )} />
+
+    {/* Sector del inmueble */}
+    <FormField control={form.control} name="sector" render={({ field }) => (
+      <FormItem>
+        <FormLabel>Sector</FormLabel>
+        <FormControl>
+          <Select
+            onValueChange={field.onChange}
+            value={field.value}
+            disabled={loadingSectors}
+          >
+            <SelectTrigger>
+              <SelectValue 
+                placeholder={
+                  loadingSectors 
+                    ? "Cargando sectores..." 
+                    : sectors.length === 0 
+                      ? "No hay sectores disponibles" 
+                      : "Selecciona un sector"
+                } 
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {sectors.map((sec) => (
+                <SelectItem key={sec.id} value={sec.id}>
+                  {sec.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )} />
+  </CardContent>
+</Card>
+
+<Card className="w-full mt-4">
+  <CardHeader>
+    <CardTitle>Ubicación Geográfica</CardTitle>
+    <CardDescription>Primero llena los datos de dirección, luego selecciona en el mapa.</CardDescription>
+  </CardHeader>
+  <CardContent className="grid gap-4">
+    {/* Inputs: País y Ciudad */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FormField
+        control={form.control}
+        name="ubicacion.pais"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>País</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="ubicacion.ciudad"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ciudad</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+
+    {/* Input: Dirección completa */}
+    <FormField
+      control={form.control}
+      name="ubicacion.direccion"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Dirección Completa</FormLabel>
           <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                'justify-between font-normal',
-                !field.value && 'text-muted-foreground'
-              )}
-            >
-              {field.value ? (
-                <span className="text-ellipsis whitespace-nowrap overflow-hidden">
-                  {allCategories?.find((category) => category.id === field.value)?.name}
-                </span>
-              ) : (
-                <span className="text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden">
-                  Seleccionar categoría
-                </span>
-              )}
-              <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
+            <Input {...field} placeholder="Calle, número, zona, etc." />
           </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="p-0">
-          <Command>
-            <CommandInput placeholder="Buscar categoría..." />
-            <CommandList>
-              <CommandEmpty>Categoría no encontrada.</CommandEmpty>
-              <CommandGroup>
-                {allCategories?.map((category) => (
-                  <CommandItem
-                    value={category.name}
-                    key={category.id}
-                    onSelect={() => {
-                      form.setValue('category', category.id)
-                      form.clearErrors('category')
-                    }}
-                  >
-                    <CheckCheckIcon
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        categorty.id === field.value ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                    {category.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
 
-<FormField
-  control={form.control}
-  name="modality"
-  render={({ field }) => (
-    <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-      <FormLabel className="leading-normal">Modalidad *</FormLabel>
-      <Popover>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                'justify-between font-normal',
-                !field.value && 'text-muted-foreground'
-              )}
-            >
-              {field.value ? (
-                <span className="text-ellipsis whitespace-nowrap overflow-hidden">
-                  {allModalities?.find((modality) => modality.id === field.value)?.name}
-                </span>
-              ) : (
-                <span className="text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden">
-                  Seleccionar modalidad
-                </span>
-              )}
-              <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="p-0">
-          <Command>
-            <CommandInput placeholder="Buscar modalidad..." />
-            <CommandList>
-              <CommandEmpty>Modalidad no encontrada.</CommandEmpty>
-              <CommandGroup>
-                {allModalities?.map((modaltity) => (
-                  <CommandItem
-                    value={modality.name}
-                    key={modality.id}
-                    onSelect={() => {
-                      form.setValue('modality', modality.id)
-                      form.clearErrors('modality')
-                    }}
-                  >
-                    <CheckCheckIcon
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        modality.id === field.value ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                    {modality.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-<FormField
-  control={form.control}
-  name="sector"
-  render={({ field }) => (
-    <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-      <FormLabel className="leading-normal">Sector</FormLabel>
-      <Popover>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant="outline"
-              role="combobox"
-              className={cn(
-                'justify-between font-normal',
-                !field.value && 'text-muted-foreground'
-              )}
-            >
-              {field.value ? (
-                <span className="text-ellipsis whitespace-nowrap overflow-hidden">
-                  {allSector?.find((sector) => sector.id === field.value)?.name}
-                </span>
-              ) : (
-                <span className="text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden">
-                  Seleccionar Sector
-                </span>
-              )}
-              <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="p-0">
-          <Command>
-            <CommandInput placeholder="Buscar modalidad..." />
-            <CommandList>
-              <CommandEmpty>Sector no encontrada.</CommandEmpty>
-              <CommandGroup>
-                {allSector?.map((sector) => (
-                  <CommandItem
-                    value={sector.name}
-                    key={sector.id}
-                    onSelect={() => {
-                      form.setValue('sector', sector.id)
-                      form.clearErrors('sector')
-                    }}
-                  >
-                    <CheckCheckIcon
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        sector.id === field.value ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                    {sector.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+    {/* Mapa */}
+    <div>
+      <FormLabel>Selecciona las coordenadas en el mapa</FormLabel>
+      <CoordinatePicker 
+        initialPosition={
+          form.getValues('ubicacion.latitud') && form.getValues('ubicacion.longitud')
+            ? [form.getValues('ubicacion.latitud'), form.getValues('ubicacion.longitud')]
+            : undefined
+        }
+        onCoordinateChange={(lat, lng) => {
+          form.setValue('ubicacion.latitud', lat);
+          form.setValue('ubicacion.longitud', lng);
+        }}
+      />
+    </div>
+  </CardContent>
+</Card>
 
-            {/* Ubicación 
-            <FormField control={form.control} name="ubicacion" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ubicación</FormLabel>
-                <FormControl>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />*/}
-
-            {/* Imágenes */}
-            {/*
-            <FormField control={form.control} name="imagenes" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Imágenes</FormLabel>
-                <FormControl>
-                  <Input type="file" multiple onChange={(e) => field.onChange(e.target.files)} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />*/}
-
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Botones móviles */}
-      <div className="flex justify-center gap-2 md:hidden">
-        <Button type="button" variant="outline" size="sm" onClick={() => navigate(PrivateRoutes.STATE)}>Descartar</Button>
-        <Button type="submit" size="sm" disabled={isMutating}>{buttonText}</Button>
-      </div>
-    </form>
-  </Form>
-</section>
-  )
+        {/* Botones móviles */}
+        <div className="flex justify-center gap-2 md:hidden">
+          <Button type="button" variant="outline" size="sm" onClick={() => navigate(PrivateRoutes.STATE)}>Descartar</Button>
+          <Button type="submit" size="sm" disabled={isMutating}>{buttonText}</Button>
+        </div>
+      </form>
+    </Form>
+  </section>
+)
 }
 export default StateFormPage
