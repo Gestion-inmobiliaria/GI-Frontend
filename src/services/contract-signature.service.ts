@@ -18,7 +18,7 @@ export class ContractSignatureService {
         contractId: string, 
         signatureData: InitiateSignatureData
     ): Promise<{ message: string; tokens: { client: string; agent: string } }> {
-        const response = await fetch(`${this.BASE_URL}/contracts/${contractId}/initiate-signatures`, {
+        const response = await fetch(`${this.BASE_URL}/initiate-signatures/${contractId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ export class ContractSignatureService {
         contractId: string, 
         signerType: SignerType
     ): Promise<{ message: string }> {
-        const response = await fetch(`${this.BASE_URL}/contracts/${contractId}/resend-invitation/${signerType}`, {
+        const response = await fetch(`${this.BASE_URL}/initiate-signatures/${contractId}/resend-invitation/${signerType}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
