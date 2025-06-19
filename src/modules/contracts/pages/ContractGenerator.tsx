@@ -1,6 +1,7 @@
 import { API_URL } from '@/config/constants'
 import React, { useState, useEffect } from 'react'
 import { ContractService } from '@/services/contract.service'
+import PaymentModal from '@/components/payments/PaymentModal'
 import { 
   ContractFormData, 
   ContractType, 
@@ -50,6 +51,11 @@ const ContractGenerator: React.FC = () => {
   const [contractFormat, setContractFormat] = useState<ContractFormat>(ContractFormat.HTML)
   const [properties, setProperties] = useState<PropertyResponse[]>([])
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  
+  // Estados para el modal de pago
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [paymentClientSecret, setPaymentClientSecret] = useState<string>('')
+  const [pendingContractId, setPendingContractId] = useState<string>('')
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -136,16 +142,55 @@ const ContractGenerator: React.FC = () => {
       )
       
       // Guardar contrato
-      await ContractService.saveContract(payload)
+      const savedContract = await ContractService.saveContract(payload)
       
+      // Procesar pago si no es efectivo
+      const paymentMethodName = getPaymentMethodName(formData.paymentMethodId)
+      
+      if (formData.paymentMethodId !== PAYMENT_METHODS.EFECTIVO) {
+        // Crear intención de pago
+        const paymentResponse = await fetch(`${API_URL}/api/payments/create-intent/${savedContract.id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: parseFloat(formData.amount)
+          })
+        })
+        
+        const paymentData = await paymentResponse.json()
+        
+        if (paymentData.statusCode === 201) {
+          // Mostrar modal de pago
+          setPaymentClientSecret(paymentData.data.clientSecret)
+          setPendingContractId(savedContract.id)
+          setShowPaymentModal(true)
+        } else {
+          throw new Error('Error al crear intención de pago')
+        }
+      } else {
+        // Para efectivo, procesar directamente
+        await processSuccessfulPayment(savedContract.id)
+      }
+      
+    } catch (error) {
+      console.error('Error:', error)
+      setMessage('Error al generar el contrato')
+      setLoading(false)
+    }
+  }
+
+  const processSuccessfulPayment = async (contractId: string) => {
+    try {
       // Descargar el contrato
       ContractService.downloadContract(
-        payload.contractContent, 
-        payload.contractNumber.toString(), 
+        (await ContractService.prepareCreatePayload(formData, selectedProperty!, contractFormat)).contractContent, 
+        formData.contractNumber, 
         contractFormat
       )
       
-      setMessage('¡Contrato generado exitosamente!')
+      setMessage('¡Contrato generado y pago procesado exitosamente!')
       
       // Limpiar formulario
       setFormData({
@@ -166,10 +211,65 @@ const ContractGenerator: React.FC = () => {
       })
       
     } catch (error) {
-      console.error('Error:', error)
-      setMessage('Error al generar el contrato')
+      console.error('Error al procesar pago exitoso:', error)
+      setMessage('Error al finalizar el proceso')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handlePaymentSuccess = async (paymentResult: any) => {
+    try {
+      // Confirmar el pago en el backend
+      await fetch(`${API_URL}/api/payments/confirm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paymentIntentId: paymentResult.paymentIntent.id
+        })
+      })
+      
+      await processSuccessfulPayment(pendingContractId)
+    } catch (error) {
+      console.error('Error al confirmar pago:', error)
+      setMessage('Error al confirmar el pago')
+    }
+  }
+
+  const handlePaymentError = (error: string) => {
+    setMessage(`Error en el pago: ${error}`)
+    setLoading(false)
+  }
+
+  const getPaymentMethodName = (paymentMethodId: string): string => {
+    switch (paymentMethodId) {
+      case PAYMENT_METHODS.EFECTIVO:
+        return 'Efectivo'
+      case PAYMENT_METHODS.TARJETA:
+        return 'Tarjeta de Crédito'
+      case PAYMENT_METHODS.QR:
+        return 'Código QR'
+      case PAYMENT_METHODS.CRYPTO:
+        return 'Criptomonedas'
+      default:
+        return 'Método de Pago'
+    }
+  }
+
+  const getPaymentMethodType = (paymentMethodId: string): string => {
+    switch (paymentMethodId) {
+      case PAYMENT_METHODS.EFECTIVO:
+        return 'cash'
+      case PAYMENT_METHODS.TARJETA:
+        return 'credit_card'
+      case PAYMENT_METHODS.QR:
+        return 'qr_code'
+      case PAYMENT_METHODS.CRYPTO:
+        return 'crypto'
+      default:
+        return 'cash'
     }
   }
 
@@ -224,6 +324,7 @@ const ContractGenerator: React.FC = () => {
                 <option value={ContractType.VENTA}>Venta</option>
                 <option value={ContractType.COMPRA}>Compra</option>
                 <option value={ContractType.ANTICRETICO}>Anticrético</option>
+                <option value={ContractType.ALQUILER}>Alquiler</option>
               </select>
             </div>
 
@@ -468,6 +569,19 @@ const ContractGenerator: React.FC = () => {
             {loading ? 'Generando...' : 'Generar y Guardar Contrato'}
           </button>
         </div>
+
+        {/* Modal de Pago */}
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          contractId={pendingContractId}
+          amount={parseFloat(formData.amount) || 0}
+          paymentMethod={getPaymentMethodType(formData.paymentMethodId)}
+          paymentMethodName={getPaymentMethodName(formData.paymentMethodId)}
+          clientSecret={paymentClientSecret}
+          onPaymentSuccess={handlePaymentSuccess}
+          onPaymentError={handlePaymentError}
+        />
       </div>
     </div>
   )

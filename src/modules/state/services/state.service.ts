@@ -6,7 +6,28 @@ import { type ApiResponse } from "@/models";
 const createState = async (url: string, { arg }: { arg: CreateState }): Promise<void> => {
   const options: RequestInit = {
     method: 'POST',
-    body: JSON.stringify(arg)
+    body: JSON.stringify({
+      descripcion: arg.descripcion,
+      precio: arg.precio,
+      estado: arg.estado,
+      area: arg.area,
+      NroHabitaciones: arg.NroHabitaciones,
+      NroBanos: arg.NroBanos,
+      NroEstacionamientos: arg.NroEstacionamientos,
+      comision: arg.comision,
+      condicion_Compra: arg.condicion_Compra, // Corregir el nombre del campo
+      user: arg.user,
+      category: arg.category,
+      modality: arg.modality,
+      sector: arg.sector,
+      ubicacion: {
+        direccion: arg.ubicacion.direccion,
+        pais: arg.ubicacion.pais,
+        ciudad: arg.ubicacion.ciudad,
+        latitud: arg.ubicacion.latitud,
+        longitud: arg.ubicacion.longitud
+      }
+    })
   }
   const response = await fetchData(url, options)
   return response
@@ -34,6 +55,8 @@ const updateState = async (url: string, { arg }: { arg: UpdateState }): Promise<
       NroHabitaciones: arg?.NroHabitaciones,
       NroBanos: arg?.NroBanos,
       NroEstacionamientos: arg?.NroEstacionamientos,
+      comision: arg?.comision,
+      condicion_Compra: arg?.condicion_Compra, // Corregir el nombre del campo
       user: arg?.user,
       category: arg?.category,
       modality: arg?.modality,
