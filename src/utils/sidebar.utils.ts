@@ -1,10 +1,8 @@
-
-import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon, FileTextIcon } from 'lucide-react'
-
 import { createElement } from 'react'
-
-
+import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon,
+    ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon,
+    MapIcon, FileTextIcon } from 'lucide-react'
 
 
 export interface MenuHeaderRoute {
@@ -16,146 +14,159 @@ export interface MenuHeaderRoute {
 }
 
 export const MenuSideBar: MenuHeaderRoute[] = [
-  {
-    label: 'Gestión de Usuarios',
-    icon: createElement(UserCogIcon, { width: 20, height: 20 }),
-    path: '/usuarios',
-    permissions: [
-      PERMISSION.USER,
-      PERMISSION.USER_SHOW,
-      PERMISSION.ROLE,
-      PERMISSION.ROLE_SHOW,
-      PERMISSION.PERMISSION,
-      PERMISSION.PERMISSION_SHOW
-    ],
-    children: [
-      {
+    {
+        label: 'Gestión de Usuarios',
+        icon: createElement(UserCogIcon, { width: 20, height: 20 }),
         path: '/usuarios',
-        label: 'Usuarios',
-        icon: createElement(UsersIcon, { width: 20, height: 20 }),
-        permissions: [PERMISSION.USER, PERMISSION.USER_SHOW]
-      },
-      {
-        path: '/usuarios/roles',
-        label: 'Roles',
-        icon: createElement(UserIcon, { width: 20, height: 20 }),
-        permissions: [PERMISSION.ROLE, PERMISSION.ROLE_SHOW]
-      },
-      {
-        path: '/usuarios/permisos',
-        label: 'Permisos',
-        icon: createElement(KeyIcon, { width: 20, height: 20 }),
-        permissions: [PERMISSION.PERMISSION, PERMISSION.PERMISSION_SHOW]
-      }
-    ]
-  },
-  {
-    label: 'Gestionar Inmobiliarias',
-    icon: createElement(MapPinIcon, { width: 20, height: 20 }),
-    path: '/realstate',
-    permissions: [
-      PERMISSION.SECTOR,
-      PERMISSION.SECTOR_SHOW,
-      PERMISSION.SECTOR_CREATE,
-      PERMISSION.SECTOR_UPDATE,
-      PERMISSION.SECTOR_DELETE
-    ],
-    children: [
-      {
-        label: 'Gestionar Sectores',
-        icon: createElement(MapPinIcon, { width: 20, height: 20 }),
-        path: '/sectores',
         permissions: [
-          PERMISSION.SECTOR,
-          PERMISSION.SECTOR_SHOW,
-          PERMISSION.SECTOR_CREATE,
-          PERMISSION.SECTOR_UPDATE,
-          PERMISSION.SECTOR_DELETE
+            PERMISSION.USER,
+            PERMISSION.USER_SHOW,
+            PERMISSION.ROLE,
+            PERMISSION.ROLE_SHOW,
+            PERMISSION.PERMISSION,
+            PERMISSION.PERMISSION_SHOW
+        ],
+        children: [
+            {
+                path: '/usuarios',
+                label: 'Usuarios',
+                icon: createElement(UsersIcon, { width: 20, height: 20 }),
+                permissions: [PERMISSION.USER, PERMISSION.USER_SHOW]
+            },
+            {
+                path: '/usuarios/roles',
+                label: 'Roles',
+                icon: createElement(UserIcon, { width: 20, height: 20 }),
+                permissions: [PERMISSION.ROLE, PERMISSION.ROLE_SHOW]
+            },
+            {
+                path: '/usuarios/permisos',
+                label: 'Permisos',
+                icon: createElement(KeyIcon, { width: 20, height: 20 }),
+                permissions: [PERMISSION.PERMISSION, PERMISSION.PERMISSION_SHOW]
+            }
         ]
-      }
-    ]
-  },
-  {
-    label: 'Gestionar Inmuebles',
-    icon: createElement(Building2Icon, { width: 20, height: 20 }),
-    path: '/state',
-    permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
-    children: [
-      {
-        label: 'Gestionar Inmueble',
+    },
+    {
+        label: 'Gestionar Inmobiliarias',
+        icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+        path: '/realstate',
+        permissions: [
+            PERMISSION.SECTOR,
+            PERMISSION.SECTOR_SHOW,
+            PERMISSION.SECTOR_CREATE,
+            PERMISSION.SECTOR_UPDATE,
+            PERMISSION.SECTOR_DELETE
+        ],
+        children: [
+            {
+                label: 'Gestionar Sectores',
+                icon: createElement(MapPinIcon, { width: 20, height: 20 }),
+                path: '/sectores',
+                permissions: [
+                    PERMISSION.SECTOR,
+                    PERMISSION.SECTOR_SHOW,
+                    PERMISSION.SECTOR_CREATE,
+                    PERMISSION.SECTOR_UPDATE,
+                    PERMISSION.SECTOR_DELETE
+                ]
+            }
+        ]
+    },
+    {
+        label: 'Gestionar Inmuebles',
         icon: createElement(Building2Icon, { width: 20, height: 20 }),
         path: '/state',
-        permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
-      },
-      {
-        label: 'Modalidades',
-        icon: createElement(NotebookIcon, { width: 20, height: 20 }),
-        path: '/modalidades',
-        permissions: [
-          PERMISSION.MODALITY,
-          PERMISSION.MODALITY_SHOW
+        permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE],
+        children: [
+            {
+                label: 'Gestionar Inmueble',
+                icon: createElement(Building2Icon, { width: 20, height: 20 }),
+                path: '/state',
+                permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
+            },
+            {
+                label: 'Modalidades',
+                icon: createElement(NotebookIcon, { width: 20, height: 20 }),
+                path: '/modalidades',
+                permissions: [
+                    PERMISSION.MODALITY,
+                    PERMISSION.MODALITY_SHOW
+                ]
+            },
+            {
+                label: 'Gestionar Categorías',
+                icon: createElement(FolderIcon, { width: 20, height: 20 }),
+                path: '/categorias',
+                permissions: [
+                    PERMISSION.CATEGORY,
+                    PERMISSION.CATEGORY_SHOW,
+                    PERMISSION.CATEGORY_CREATE,
+                    PERMISSION.CATEGORY_UPDATE,
+                    PERMISSION.CATEGORY_DELETE
+                ]
+            }
         ]
-      },
-      {
-        label: 'Gestionar Categorías',
-        icon: createElement(FolderIcon, { width: 20, height: 20 }),
-        path: '/categorias',
-        permissions: [
-          PERMISSION.CATEGORY,
-          PERMISSION.CATEGORY_SHOW,
-          PERMISSION.CATEGORY_CREATE,
-          PERMISSION.CATEGORY_UPDATE,
-          PERMISSION.CATEGORY_DELETE
+    },
+    {
+        label: 'Visitas',
+        icon: createElement(FileTextIcon, { width: 20, height: 20 }),
+        path: '/visitas',
+        permissions: [PERMISSION.USER, PERMISSION.USER], // TODO: Cambiar a Visitas
+        children: [
+            {
+                label: 'Ver horarios',
+                icon: createElement(FileTextIcon, { width: 20, height: 20 }),
+                path: '/visitas',
+                permissions: [PERMISSION.USER, PERMISSION.USER] // TODO: Cambiar a Visitas
+            }
         ]
-      }
-    ]
-  },
-  {
-    label: 'Contratos',
-    icon: createElement(FileTextIcon, { width: 20, height: 20 }),
-    path: '/contratos',
-    permissions: [PERMISSION.USER, PERMISSION.USER], // TODO: Cambiar a CONTRACT
-    children: [
-      {
-        label: 'Generar Contrato',
+    },
+    {
+        label: 'Contratos',
         icon: createElement(FileTextIcon, { width: 20, height: 20 }),
         path: '/contratos',
-        permissions: [PERMISSION.USER, PERMISSION.USER] // TODO: Cambiar a CONTRACT
-      }
-    ]
-  },
-  {
-    label: 'Mapa',
-    icon: createElement(MapIcon, { width: 20, height: 20 }),
-    path: '/mapa',
-    permissions: [PERMISSION.MAP_VIEW]
-  },
-  {
-    label: 'Subscripción',
-    icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
-    path: '/subscripcion',
-    permissions: [PERMISSION.SUBSCRIPTION]
-  },
-  {
-    label: 'Bitácora',
-    icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
-    path: '/bitacora',
-    permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
-
-  },
-  {
-    label: 'Configuraciones',
-    icon: createElement(SettingsIcon, { width: 20, height: 20 }),
-    path: '/backup',
-    permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW],
-    children: [
-      {
-        label: 'Backup & Restore',
-        icon: createElement(DatabaseIcon, { width: 20, height: 20 }),
-        path: '/backup',
+        permissions: [PERMISSION.USER, PERMISSION.USER], // TODO: Cambiar a CONTRACT
+        children: [
+            {
+                label: 'Generar Contrato',
+                icon: createElement(FileTextIcon, { width: 20, height: 20 }),
+                path: '/contratos',
+                permissions: [PERMISSION.USER, PERMISSION.USER] // TODO: Cambiar a CONTRACT
+            }
+        ]
+    },
+    {
+        label: 'Mapa',
+        icon: createElement(MapIcon, { width: 20, height: 20 }),
+        path: '/mapa',
+        permissions: [PERMISSION.MAP_VIEW]
+    },
+    {
+        label: 'Subscripción',
+        icon: createElement(CreditCardIcon, { width: 20, height: 20 }),
+        path: '/subscripcion',
+        permissions: [PERMISSION.SUBSCRIPTION]
+    },
+    {
+        label: 'Bitácora',
+        icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
+        path: '/bitacora',
         permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
-      }
-    ]
-  },
-]
 
+    },
+    {
+        label: 'Configuraciones',
+        icon: createElement(SettingsIcon, { width: 20, height: 20 }),
+        path: '/backup',
+        permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW],
+        children: [
+            {
+                label: 'Backup & Restore',
+                icon: createElement(DatabaseIcon, { width: 20, height: 20 }),
+                path: '/backup',
+                permissions: [PERMISSION.LOG, PERMISSION.LOG_SHOW]
+            }
+        ]
+    },
+]
