@@ -111,7 +111,7 @@ const formSchema = z.object({
    .max(1, 'la comision no puede ser mayor a 1')
    .positive('la comsion debe ser un número positivo'),
 
-  condicionCompra: z
+  condicion_Compra: z
    .string({ required_error: 'La condicion de compra es requerida' })
    .min(1,'La condicion de compra no puede estar vacía'),
 
@@ -159,7 +159,7 @@ const StateFormPage = ({ buttonText, title }: IFormProps) => {
       NroBanos: 0,
       NroEstacionamientos: 0,
       comision: 0,
-      condicionCompra: '',
+      condicion_Compra: '',
       user: '',
       category: '',
       modality: '',
@@ -251,7 +251,7 @@ useEffect(() => {
         NroBanos: state.NroBanos ?? 0,
         NroEstacionamientos: state.NroEstacionamientos ?? 0,
         comision: state.comision ?? 0,
-        condicionCompra: state.condicion_Compra ?? '',
+        condicion_Compra: state.condicion_Compra ?? '',
         user: state.user?.id ?? '',
         category: state.category?.id ?? '',
         modality: state.modality?.id ?? '',
@@ -438,7 +438,7 @@ return (
   )} />
 </div>
               {/* Condiciones de compra */}
-              <FormField control={form.control} name="condicionCompra" render={({ field }) => (
+              <FormField control={form.control} name="condicion_Compra" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Condiciones de Compra</FormLabel>
                   <FormControl>

@@ -1,7 +1,8 @@
 export enum ContractType {
     COMPRA = 'COMPRA',
     VENTA = 'VENTA',
-    ANTICRETICO = 'ANTICRETICO'
+    ANTICRETICO = 'ANTICRETICO',
+    ALQUILER = 'ALQUILER'
 }
 
 export enum ContractStatus {
