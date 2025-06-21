@@ -11,12 +11,12 @@ function numeroALetras(num: number): string {
   const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE']
   const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA']
   const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS']
-  
+
   if (num === 0) return 'CERO'
   if (num >= 1000000) return 'UN MILLÓN'
-  
+
   let resultado = ''
-  
+
   if (num >= 1000) {
     const miles = Math.floor(num / 1000)
     if (miles === 1) {
@@ -26,21 +26,21 @@ function numeroALetras(num: number): string {
     }
     num %= 1000
   }
-  
+
   if (num >= 100) {
     resultado += centenas[Math.floor(num / 100)] + ' '
     num %= 100
   }
-  
+
   if (num >= 10) {
     resultado += decenas[Math.floor(num / 10)] + ' '
     num %= 10
   }
-  
+
   if (num > 0) {
     resultado += unidades[num] + ' '
   }
-  
+
   return resultado.trim()
 }
 
@@ -265,6 +265,24 @@ export const contractTemplates: Record<ContractType, (data: TemplateData) => str
     </body>
     </html>
   `,
+  //Falto el contrato de alquiler 
+  [ContractType.ALQUILER]: (data: TemplateData) => `
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="UTF-8"><title>Contrato de Alquiler</title></head>
+  <body>
+    <h1>CONTRATO DE ALQUILER</h1>
+    <p>Contrato N°: ${data.contractNumber}</p>
+    <p>Fecha: ${data.currentDate}</p>
+    <p>Entre el ARRENDADOR: ${data.agentName} (C.I. ${data.agentDocument}) y el ARRENDATARIO: ${data.clientName} (C.I. ${data.clientDocument})</p>
+    <p>Inmueble: ${data.property.address}</p>
+    <p>Monto: $us ${data.amount} (${numeroALetras(parseFloat(data.amount))} DÓLARES AMERICANOS)</p>
+    <p>Fecha de inicio: ${data.startDate}</p>
+    <p>Fecha de finalización: ${data.endDate}</p>
+    ${data.notes ? `<p>Notas: ${data.notes}</p>` : ''}
+  </body>
+  </html>
+`,
 
   [ContractType.ANTICRETICO]: (data: TemplateData) => `
     <!DOCTYPE html>

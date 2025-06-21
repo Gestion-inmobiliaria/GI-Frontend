@@ -144,8 +144,8 @@ const ContractGenerator: React.FC = () => {
       // Guardar contrato
       const savedContract = await ContractService.saveContract(payload)
       
-      // Procesar pago si no es efectivo
-      const paymentMethodName = getPaymentMethodName(formData.paymentMethodId)
+      // No se usa el nombre del metodo de pago en este momento
+     // const paymentMethodName = getPaymentMethodName(formData.paymentMethodId)
       
       if (formData.paymentMethodId !== PAYMENT_METHODS.EFECTIVO) {
         // Crear intención de pago
@@ -171,7 +171,7 @@ const ContractGenerator: React.FC = () => {
         }
       } else {
         // Para efectivo, procesar directamente
-        await processSuccessfulPayment(savedContract.id)
+        await processSuccessfulPayment()
       }
       
     } catch (error) {
@@ -181,8 +181,9 @@ const ContractGenerator: React.FC = () => {
     }
   }
 
-  const processSuccessfulPayment = async (contractId: string) => {
+  const processSuccessfulPayment = async () => {
     try {
+    
       // Descargar el contrato
       ContractService.downloadContract(
         (await ContractService.prepareCreatePayload(formData, selectedProperty!, contractFormat)).contractContent, 
@@ -231,7 +232,7 @@ const ContractGenerator: React.FC = () => {
         })
       })
       
-      await processSuccessfulPayment(pendingContractId)
+      await processSuccessfulPayment()
     } catch (error) {
       console.error('Error al confirmar pago:', error)
       setMessage('Error al confirmar el pago')

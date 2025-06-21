@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   useStripe,
   useElements,
@@ -6,7 +6,8 @@ import {
   PaymentElement
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
-import { API_URL } from '@/config/constants';
+//No es necesario importar API_URL aquí, ya que no se usa en este componente
+// import { API_URL } from '@/config/constants'; 
 import QRCode from 'react-qr-code';
 
 interface StripePaymentFormProps {
