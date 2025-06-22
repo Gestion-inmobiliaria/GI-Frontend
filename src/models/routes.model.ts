@@ -63,6 +63,13 @@ export enum PrivateRoutes {
     CONTRACTS_EDIT = '/contratos/:id',
     CONTRACTS_DETAIL = '/contratos/detalle/:id',
 
+   // impulso
+   IMPULSO = '/impulso',
+   IMPULSO_CREATE = '/impulso/crear',
+   IMPULSO_EDIT = '/impulso/:id',
+   IMPULSO_CANCELAR = '/impulso/cancelar/:id',
+   IMPULSO_DETAIL = '/impulso/detalle/:id',
+
 }
 
 export interface Route {
