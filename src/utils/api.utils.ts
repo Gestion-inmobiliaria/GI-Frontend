@@ -21,6 +21,8 @@ export const ENDPOINTS = {
   // backup
   BACKUP: '/api/backup', 
 
+  // impulsar inmueble
+  IMPULSO: '/api/impulsar-property', //actualizar el api
 }
 
 export const API_BASEURL = AppConfig.API_URL
