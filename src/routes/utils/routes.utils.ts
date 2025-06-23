@@ -4,7 +4,7 @@ import { stateRoutes } from './state.utils'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 import { userRoutes, sectorRoutes, categoryRoutes, modalityRoutes, logRoutes } from '.'
-
+import { impulsoRoutes } from './impulsar_state'
 
 
 const NotFound = lazy(() => import('@/components/not-found'))
@@ -57,5 +57,6 @@ export const PrivateAllRoutes: Route[] = [
     ...categoryRoutes,
     ...modalityRoutes,
     ...logRoutes,
-    ...mapRoutes 
+    ...mapRoutes, 
+    ...impulsoRoutes
 ]

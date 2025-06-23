@@ -1,6 +1,6 @@
 
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon, FileTextIcon } from 'lucide-react'
+import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon, ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon, MapIcon, FileTextIcon,TrendingUp } from 'lucide-react'
 
 import { createElement } from 'react'
 
@@ -107,6 +107,13 @@ export const MenuSideBar: MenuHeaderRoute[] = [
           PERMISSION.CATEGORY_UPDATE,
           PERMISSION.CATEGORY_DELETE
         ]
+      },
+
+      {
+        label: 'Impulsar',
+        icon: createElement(TrendingUp, { width: 20, height: 20 }),
+        path: '/impulso',
+         permissions: [PERMISSION.SECTOR, PERMISSION.SECTOR_SHOW, PERMISSION.SECTOR_CREATE, PERMISSION.SECTOR_UPDATE, PERMISSION.SECTOR_DELETE]
       }
     ]
   },
