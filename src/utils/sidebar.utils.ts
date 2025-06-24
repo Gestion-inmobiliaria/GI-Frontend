@@ -2,7 +2,7 @@ import { createElement } from 'react'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 import { UserCogIcon, UserIcon, UsersIcon, KeyIcon, CreditCardIcon, MapPinIcon,
     ClipboardListIcon, NotebookIcon, FolderIcon, Building2Icon, SettingsIcon, DatabaseIcon,
-    MapIcon, FileTextIcon } from 'lucide-react'
+    MapIcon, FileTextIcon, CalendarIcon} from 'lucide-react'
 
 
 export interface MenuHeaderRoute {
@@ -115,10 +115,16 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         permissions: [PERMISSION.USER, PERMISSION.USER], // TODO: Cambiar a Visitas
         children: [
             {
-                label: 'Ver horarios',
-                icon: createElement(FileTextIcon, { width: 20, height: 20 }),
+                label: 'Calendario de Visitas',
+                icon: createElement(CalendarIcon, { width: 20, height: 20 }),
                 path: '/visitas',
-                permissions: [PERMISSION.USER, PERMISSION.USER] // TODO: Cambiar a Visitas
+                permissions: [PERMISSION.USER, PERMISSION.USER]
+            },
+            {
+                label: 'Agendar Visita',
+                icon: createElement(ClipboardListIcon, { width: 20, height: 20 }),
+                path: '/visitas/nueva',
+                permissions: [PERMISSION.USER, PERMISSION.USER]
             }
         ]
     },
