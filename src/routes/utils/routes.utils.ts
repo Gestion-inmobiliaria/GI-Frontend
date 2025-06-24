@@ -14,6 +14,7 @@ const SubscriptionPage = lazy(() => import('@modules/subscription/pages'))
 const ContractsPage = lazy(() => import('@/modules/contracts/pages/ContractsPage'))
 const PlanSubscriptionPage = lazy(() => import('@modules/subscription/pages/plan-subscription'))
 const PlanSubscriptionSuccessPage = lazy(() => import('@modules/subscription/pages/plan-subscription/success'))
+const VisitsPage = lazy(() => import('@modules/visits/pages/VisitsPage'))
 
 export const PrivateAllRoutes: Route[] = [
     {
@@ -50,7 +51,12 @@ export const PrivateAllRoutes: Route[] = [
         path: PrivateRoutes.CONTRACTS,
         element: createElement(ContractsPage),
         permissions: [] as PERMISSION[]
-      },
+    },
+    {
+        path: PrivateRoutes.VISITS,
+        element: createElement(VisitsPage),
+        permissions: [] as PERMISSION[]
+    },
     ...userRoutes,
     ...sectorRoutes,
     ...stateRoutes,
