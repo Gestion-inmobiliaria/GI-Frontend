@@ -86,7 +86,7 @@ const VisitCalendar: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-              Calendario de Visitas
+              Google Calendar - Visitas
           </h2>
 
           {/* Leyenda de colores */}
